@@ -500,6 +500,11 @@ div {
               "all"
             }?,
         
+        ## Suppress output if number of names is at or above a min,
+        ## or at or below a max value
+        attribute suppress-min { xsd:integer }?,
+        attribute suppress-max { xsd:integer }?,
+
         ## The delimiter for personal name parts where sort order differs from 
         ## display order (for example, in standard Western names). This is the
         ## ", " in "Doe, John."
