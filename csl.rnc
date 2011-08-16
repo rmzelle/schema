@@ -239,9 +239,9 @@ div {
             ## Indicates with which version of the CSL schema the locale file is compatible
             attribute version { "1.0" },
             
-            (localized-terms & localized-dates+ & localized-options)
+            (localized-terms & item-types* & localized-dates+ & localized-options)
         }
-    
+
     ## In styles, cs:locale can be used to override localized terms, dates and options.
     style-locale =
         element cs:locale {
@@ -252,12 +252,37 @@ div {
             ## the xml:lang attribute.
             attribute xml:lang { xsd:language }?,
             
-            (localized-terms? & localized-dates* & localized-options?)
+            (localized-terms? & item-types* & localized-dates* & localized-options?)
         }
-    localized-terms = element cs:terms { (simple-term | compound-term)+ }
-    term-attributes =
+
+    ## Item types may be assigned to a gender
+    item-types = 
+        element cs:type {
+            gender-attribute,
+            attribute name { cs-types }
+        }
+
+    localized-terms = element cs:terms {
+        (
+              simple-numeric-term
+            | simple-non-numeric-term
+            | compound-numeric-term
+            | compound-non-numeric-term
+        )+
+    }
+    numeric-term-attributes =
         attribute form { cs-term-forms }?,
-        attribute name { cs-terms }
+        gender-attribute?,
+        attribute name { cs-numeric-terms }
+    non-numeric-term-attributes =
+        attribute form { cs-term-forms }?,
+        gender-form-attribute,
+        attribute name { cs-non-numeric-terms }
+
+    gender-attribute = 
+        attribute gender { "masculine" | "feminine" }
+    gender-form-attribute =
+        attribute gender-form { "masculine" | "feminine" }?
 
     ## "verb-short" reverts to "verb" if the "verb-short" form is not available
     ## "symbol" reverts to "short" if the "symbol" form is not available
@@ -273,11 +298,14 @@ div {
     }
     
     ## Simple terms are basic strings, used to represent genres, media, etc.
-    simple-term = element cs:term { term-attributes, text }
+    simple-numeric-term = element cs:term { numeric-term-attributes, text }
+    simple-non-numeric-term = element cs:term { non-numeric-term-attributes, text }
     
     ## Compound terms are those whose output can be either singular or plural. 
     ## Typically used for things like page number or editor labels.
-    compound-term = element cs:term { term-attributes, single-term, multiple-term }
+    compound-numeric-term = element cs:term { numeric-term-attributes, single-term, multiple-term }
+    compound-non-numeric-term = element cs:term { non-numeric-term-attributes, single-term, multiple-term }
+
     multiple-term = element cs:multiple { text }
     single-term = element cs:single { text }
     
@@ -303,7 +331,7 @@ div {
                 affixes, text-case, font-formatting, (month | day | year)
             }+
         }
-    
+
     ## Locale specific options.
     localized-options =
         
