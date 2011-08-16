@@ -885,7 +885,7 @@ div {
         
         ## Tests whether the locator matches the given locator variables
         attribute locator {
-            list { cs-terms.locator+ }
+            list { cs-locator-terms+ }
         }?,
         
         ## The boolean operators below indicate the relative position of a 

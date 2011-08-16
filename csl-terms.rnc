@@ -1,9 +1,49 @@
-## Terms
-div {
-  cs-terms =
-    
-    ## Miscellaneous Terms
-    "accessed"
+## Composed term sets for reference in the schema
+
+cs-terms = 
+      ## All terms
+      cs-numeric-terms
+    | cs-non-numeric-terms
+    | cs-locator-terms-without-variable-companions
+
+cs-locator-terms =
+      ## Terms used in supplementary locators
+      cs-locator-terms-with-variable-companions
+    | cs-locator-terms-without-variable-companions
+
+cs-numeric-terms =
+      ## Terms that can be handled numerically
+      cs-locator-terms-with-variable-companions
+    | "chapter-number"
+    | "collection-number"
+    | "edition"
+    | "number"
+    | "number-of-volumes"
+    |
+      ## Months
+      "month-01"
+    | "month-02"
+    | "month-03"
+    | "month-04"
+    | "month-05"
+    | "month-06"
+    | "month-07"
+    | "month-08"
+    | "month-09"
+    | "month-10"
+    | "month-11"
+    | "month-12"
+
+cs-non-numeric-terms =
+      ## Contributor Roles
+      cs-names
+    | "editortranslator"
+    |
+      ## Categories
+      info-field-categories
+    |
+      ## Miscellaneous terms
+      "accessed"
     | "ad"
     | "and"
     | "and others"
@@ -13,7 +53,6 @@ div {
     | "by"
     | "circa"
     | "cited"
-    | "edition"
     | "et-al"
     | "forthcoming"
     | "from"
@@ -28,20 +67,6 @@ div {
     | "presented at"
     | "reference"
     | "retrieved"
-    | 
-      ## Months
-      "month-01"
-    | "month-02"
-    | "month-03"
-    | "month-04"
-    | "month-05"
-    | "month-06"
-    | "month-07"
-    | "month-08"
-    | "month-09"
-    | "month-10"
-    | "month-11"
-    | "month-12"
     | 
       ## Seasons
       "season-01"
@@ -72,35 +97,25 @@ div {
     | "long-ordinal-08"
     | "long-ordinal-09"
     | "long-ordinal-10"
-    |
-      ## Contributor Roles
-      cs-names
-    | "editortranslator"
-    |
-      ## Categories
-      info-field-categories
-    |
-      ## Locators
-      cs-terms.locator
-    | cs-terms.extension
-  
-  ## Locators
-  cs-terms.locator =
-    "book"
+
+## Sub-categories for locator terms
+
+cs-locator-terms-with-variable-companions = 
+      "issue"
+    | "note"
+    | "page"
+    | "section"
+    | "volume"
+
+cs-locator-terms-without-variable-companions =
+      "book"
     | "chapter"
     | "column"
     | "figure"
     | "folio"
-    | "issue"
     | "line"
-    | "note"
     | "opus"
-    | "page"
     | "paragraph"
     | "part"
-    | "section"
     | "sub verbo"
     | "verse"
-    | "volume"
-}
-
