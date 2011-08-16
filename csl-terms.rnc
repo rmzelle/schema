@@ -61,6 +61,9 @@ div {
     | "ordinal-03"
     | "ordinal-04"
     |
+      ## Extended ordinal terms
+      xsd:string { pattern = "ordinal\-\d{2,4}" }
+    |
       ## Long Ordinals
       "long-ordinal-01"
     | "long-ordinal-02"
