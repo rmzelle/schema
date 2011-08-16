@@ -620,7 +620,7 @@ div {
                attribute value { text }
              | (
                 ## render variable
-                attribute variable { cs-variables },
+                attribute variable { cs-variables | cs-numbers },
                 attribute form { "short" | "long" }?))
         }
     
@@ -833,7 +833,7 @@ div {
 }
 [ a:documentation [ xhtml:h2 [ "Sorting" ] ] ]
 div {
-    all-variables = cs-variables | cs-dates | cs-names
+    all-variables = cs-variables | cs-numbers | cs-dates | cs-names
     
     ## Specifies the sort order within citations or the bibliography. By
     ## default, items are sorted in the order cited.
