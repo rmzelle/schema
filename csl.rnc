@@ -364,13 +364,30 @@ div {
     ## one or more references to bibliographic sources. These references can either
     ## be simple in-text keys [doe99] or numeric markers [1], or more complex short
     ## descriptors common in author-date (Doe, 1999a) or note styles.
-    citation = element cs:citation { (citation-options & sort?), citation-layout }
+
+    citation = element cs:citation { 
+        (citation-options & sort?),
+        citation-layout-locale*,
+        citation-layout-default
+    }
     
-    bibliography = element cs:bibliography { (bibliography-options & sort?), bibliography-layout }
-    
-    citation-layout = element cs:layout { affixes, font-formatting, delimiter, cs-element }
-    bibliography-layout = element cs:layout { affixes, font-formatting, cs-element }
+    bibliography = element cs:bibliography {
+        (bibliography-options & sort?),
+        bibliography-layout-locale*,
+        bibliography-layout-default
+    }
+
+	citation-layout-locale = element cs:layout { affixes, font-formatting, delimiter, cs-element, layout-locale }
+	citation-layout-default = element cs:layout { affixes, font-formatting, delimiter, cs-element }
+
+	bibliography-layout-locale = element cs:layout { affixes, font-formatting, cs-element, layout-locale }
+	bibliography-layout-default = element cs:layout { affixes, font-formatting, cs-element }
+
     cs-element = (names | date | label | cs-text | cs-number | choose | group)+
+
+    layout-locale = attribute locale { 
+        list { xsd:language+ }
+    }
 }
 [ a:documentation [ xhtml:h2 [ "Contributor Names" ] ] ]
 div {
