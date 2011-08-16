@@ -20,6 +20,9 @@ cs-numeric-terms =
     | "number"
     | "number-of-volumes"
     |
+      ## Extended numeric terms
+      xsd:string { pattern = "(chapter\-number|collection\-number|edition|issue|note|number|number\-of\-volumes|page|section|volume|)\-\d{2}" }
+    |
       ## Months
       "month-01"
     | "month-02"
