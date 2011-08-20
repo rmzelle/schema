@@ -84,7 +84,7 @@ div {
 div {
     
     ## The version of the CSL schema with which the style is compatible.
-    version = attribute version { "1.0" }
+    version = attribute version { "1.1mlz1" }
     
     ## Metadata for independent styles (model loosely based on that of Atom).
     info =
