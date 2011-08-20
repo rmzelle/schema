@@ -25,6 +25,7 @@ include "csl-terms.rnc"
 include "csl-types.rnc"
 include "csl-variables.rnc"
 include "csl-categories.rnc"
+include "csl-jurisdictions.rnc"
 
 # Embedded Schematron rules to detect undefined macro-calls in cs:text, cs:key
 
@@ -1014,7 +1015,12 @@ div {
         ##          given condition values
         ##    none: a condition tests "true" when it tests "true" for none of the
         ##          given condition values
-        attribute match { "all" | "any" | "none" }?
+        attribute match { "all" | "any" | "none" }?,
+
+        ## Tests whether the jurisdiction variable matches the given jurisdictions
+        attribute jurisdiction {
+            list { jurisdictions+ }
+        }?
 }
 
 ## Formatting attributes.
