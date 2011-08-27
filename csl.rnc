@@ -444,6 +444,11 @@ div {
         ## (e.g., J. K. Rowling) and the text to follow each initial.
         attribute initialize-with { text }?,
         
+        ## Indicates whether to suppress initialization. When true, the string 
+        ## argument to initialize-with is applied to initials contained
+        ## in the full form of the name.
+        attribute initialize { xsd:boolean }?,
+		
         ## Sets the author name order to correspond to the sort order of
         ## the bibliography; e.g. Doe, John (name-as-sort-order) vs. John Doe (w/o
         ## attribute).
