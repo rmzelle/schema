@@ -466,10 +466,29 @@ div {
         ## ", " in "Doe, John."
         attribute sort-separator { text }?
     
+    ## Attributes for use in formatting institution names
+    institution-attributes =
+        delimiter?,
+        ## The order of institution subunits can be reversed
+        attribute reverse-order { "true" | "false" }?,
+        ( 
+          ## Include the first n institutional subunit names,
+          ## even when a personal name is also present
+          attribute use-first { xsd:integer }
+          |
+          ## Include the first n institutional subunit names
+          ## only if no personal names are present
+            attribute substitute-use-first { xsd:integer } )?,
+        ## Always include the last n institutional subunit names
+        attribute use-last { xsd:integer }?,
+        ## Controls which forms of an institutional subunit name
+        ## to include
+        attribute institution-parts { "long" | "short" | "long-short" | "short-long" }?
+
     names =
         element cs:names {
             names-attributes,
-            ((name?, et-al?) & name-label*),
+            ((name?, et-al?, institution?) & name-label*),
             substitute?
         }
     
@@ -517,6 +536,27 @@ div {
             attribute term { "et-al" | "and others" }?,
             affixes,
             font-formatting
+        }
+    
+    ## Institution, used to format institutional subunit names
+    ## Institutional subunit names always follow personal names
+    ## when this element is included in cs:names
+    institution = 
+        element cs:institution {
+            institution-attributes,
+            ## formatting and affixes of long and short
+            ## forms may be controlled individually
+            element cs:institution-part {
+                ( ( attribute name { "long" },
+                    ## apply formatting to long form only
+                    ## if short form is also available
+                    attribute if-short { "true" | "false" }? )
+                  | attribute name { "short" }
+                ),
+                text-case,
+                font-formatting,
+                affixes
+            }*
         }
     
     ## Substitutions, if the name does not exist
