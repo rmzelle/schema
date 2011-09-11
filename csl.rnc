@@ -727,7 +727,7 @@ div {
             display,
             font-formatting,
             text-case,
-            attribute variable { cs-numbers },
+            attribute variable { cs-numbers | "locator" },
             attribute form { "numeric" | "ordinal" | "roman" | "long-ordinal" }?
         }
 }
@@ -740,7 +740,7 @@ div {
     label =
         element cs:label {
             label-primitives,
-            attribute variable { "cs-numbers" | "locator" | "page" },
+            attribute variable { cs-numbers | "locator" | "page" },
             attribute form { "long" | "short" | "symbol" }?
         }
     label-primitives =
