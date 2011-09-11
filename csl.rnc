@@ -359,8 +359,17 @@ div {
 	citation-layout-locale = element cs:layout { affixes, font-formatting, delimiter, cs-element, layout-locale }
 	citation-layout-default = element cs:layout { affixes, font-formatting, delimiter, cs-element }
 
-	bibliography-layout-locale = element cs:layout { affixes, font-formatting, cs-element, layout-locale }
-	bibliography-layout-default = element cs:layout { affixes, font-formatting, cs-element }
+	bibliography-layout-locale = element cs:layout { affixes, font-formatting, layout-locale, cs-generate, cs-element }
+	bibliography-layout-default = element cs:layout { affixes, font-formatting, cs-generate?, cs-element }
+
+    cs-generate = element cs:generate {
+        attribute type-map {
+            list { (cs-types, cs-types) }
+        },
+        attribute trigger-fields {
+            list { cs-variables+ }
+        }
+    }+
 
     cs-element = (names | date | label | cs-text | cs-number | choose | group)+
 
@@ -698,7 +707,8 @@ div {
              | (
                 ## render variable
                 attribute variable { cs-variables },
-                attribute form { "short" | "long" }?))
+                attribute form { "short" | "long" }?,
+                attribute leading-noise-words { "drop" | "demote" }?))
         }
     
     ## The number markup directive matches the first number found in a field, 
