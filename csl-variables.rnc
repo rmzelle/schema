@@ -63,6 +63,7 @@ div {
     | "jurisdiction"
     | "keyword"
     | "locator"
+    | "locator-revision"
     | "medium"
     | "note"
     | "original-publisher"
