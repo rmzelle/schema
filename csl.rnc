@@ -919,7 +919,7 @@ div {
     subsequent-author-substitute-opt = (
         attribute subsequent-author-substitute { text },
         ## Sets the rule to use for author substitution
-        attribute subsequent-author-substitute-rule { "complete-all" | "complete-each" | "partial" }?
+        attribute subsequent-author-substitute-rule { "complete-all" | "complete-each" | "partial-each" | "partial-first" }?
     )?
 }
 [ a:documentation [ xhtml:h2 [ "Sorting" ] ] ]
