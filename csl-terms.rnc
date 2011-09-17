@@ -137,6 +137,7 @@ div {
     | "number"
     | "number-of-pages"
     | "number-of-volumes"
+    | "supplement"
     |
       ## Extended numeric terms
       xsd:string { pattern = "(chapter\-number|collection\-number|edition|issue|note|number|number\-of\-volumes|page|section|volume|)\-\d{2}" }
