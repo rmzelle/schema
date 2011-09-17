@@ -24,6 +24,7 @@ div {
     | "pamphlet"
     | "paper-conference"
     | "patent"
+    | "periodical"
     | "personal_communication"
     | "post"
     | "post-weblog"
