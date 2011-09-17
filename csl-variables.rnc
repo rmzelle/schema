@@ -23,6 +23,7 @@ div {
     | "issued"
     | "original-date"
     | "submitted" 
+    | "locator-date"
 }
 
 ## number variables
