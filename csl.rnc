@@ -916,7 +916,11 @@ div {
     second-field-align-opt = attribute second-field-align { "flush" | "margin" }?
     
     ## Substitutes subsequent recurrences of an author for a given string.
-    subsequent-author-substitute-opt = attribute subsequent-author-substitute { text }?
+    subsequent-author-substitute-opt = (
+        attribute subsequent-author-substitute { text },
+        ## Sets the rule to use for author substitution
+        attribute subsequent-author-substitute-rule { "complete-all" | "complete-each" | "partial" }?
+    )?
 }
 [ a:documentation [ xhtml:h2 [ "Sorting" ] ] ]
 div {
