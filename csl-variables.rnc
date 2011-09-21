@@ -59,6 +59,7 @@ div {
     | "event-place"
     | "first-reference-note-number"
     | "genre"
+    | "hereinafter"
     | "ISBN"
     | "jurisdiction"
     | "keyword"
