@@ -802,7 +802,7 @@ div {
     ## Abbreviation setting of ranges in the page variable
     ## (by default no reformatting is applied to the input data).
     page-range-format-opt =
-        attribute page-range-format { "expanded" | "minimal" | "chicago" }?
+        attribute page-range-format { "expanded" | "minimal" | "minimal-two" | "chicago" }?
     
     ## The collapse options control citation collapsing.
     collapse-opt =
