@@ -255,6 +255,11 @@ div {
             
             (localized-terms? & localized-dates* & localized-options?)
         }
+
+    ## Strings for use in affixes
+    nospace-prefix = xsd:string { pattern = "([^ ].*)*" }
+    nospace-suffix = xsd:string { pattern = "(.*[^ ])*" }
+
     localized-terms = element cs:terms { (simple-term | compound-term)+ }
     term-attributes =
         (( attribute form { cs-term-forms }?,
@@ -307,7 +312,7 @@ div {
             font-formatting,
             delimiter,
             element cs:date-part {
-                affixes, text-case, font-formatting, (month | day | year)
+                date-affixes, text-case, font-formatting, (month | day | year)
             }+
         }
     
@@ -520,7 +525,7 @@ div {
     names =
         element cs:names {
             names-attributes,
-            ((name?, et-al?, institution?) & name-label*),
+            (name-label-before?, name?, et-al?, institution?, name-label-after?),
             substitute?
         }
     
@@ -554,8 +559,16 @@ div {
         }
     
     ## Similar to label as below, but inherits variable from <names> tag
-    name-label = element cs:label {
+    name-label-before = element cs:label {
                      attribute form { cs-term-forms }?,
+                     attribute prefix { nospace-prefix}?,
+                     attribute suffix { text }?,
+                     label-primitives
+                 }
+    name-label-after = element cs:label {
+                     attribute form { cs-term-forms }?,
+                     attribute prefix { text }?,
+                     attribute suffix { nospace-suffix }?,
                      label-primitives
                  }
     
@@ -636,7 +649,7 @@ div {
                 ## order, the relevant `date-part`-elements, and by applying formatting,
                 ## affixes on cs:date and cs:date-part.
                 element cs:date-part {
-                    affixes, text-case, font-formatting, (month | day | year)
+                    date-affixes, text-case, font-formatting, (month | day | year)
                 }+,
                 delimiter)),
             affixes,
@@ -740,11 +753,11 @@ div {
     label =
         element cs:label {
             label-primitives,
+            affixes,
             attribute variable { cs-numbers | "locator" | "page" },
             attribute form { "long" | "short" | "symbol" }?
         }
     label-primitives =
-        affixes,
         font-formatting,
         text-case,
         strip-periods,
@@ -1031,6 +1044,9 @@ div {
 ## Formatting attributes.
 div {
     affixes =
+        attribute prefix { nospace-prefix }?,
+        attribute suffix { nospace-suffix }?
+    date-affixes =
         attribute prefix { text }?,
         attribute suffix { text }?
     delimiter = attribute delimiter { text }?
