@@ -1020,7 +1020,7 @@ div {
       |        
         ## Tests whether the given variables contain non-empty values
         attribute variable {
-            list { all-variables+ }
+            list { (all-variables+ | "type") }
         }
 
       |
