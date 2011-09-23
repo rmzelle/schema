@@ -42,7 +42,7 @@ div {
 
 ## standard variables
 div {
-  cs-variables =
+  cs-strings =
     "abstract"
     | "annote"
     | "archive"
@@ -82,6 +82,12 @@ div {
     | "URL"
     | "version"
     | "year-suffix"
+}
+
+## standard variables
+div {
+  cs-variables =
+    cs-strings
     |
       ## number variables
       cs-numbers
