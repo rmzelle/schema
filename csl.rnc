@@ -256,10 +256,6 @@ div {
             (localized-terms? & localized-dates* & localized-options?)
         }
 
-    ## Strings for use in affixes
-    nospace-prefix = xsd:string { pattern = "([^ ].*)*" }
-    nospace-suffix = xsd:string { pattern = "(.*[^ ])*" }
-
     localized-terms = element cs:terms { (simple-term | compound-term)+ }
     term-attributes =
         (( attribute form { cs-term-forms }?,
@@ -312,7 +308,7 @@ div {
             font-formatting,
             delimiter,
             element cs:date-part {
-                date-affixes, text-case, font-formatting, (month | day | year)
+                affixes-date, text-case, font-formatting, (month | day | year)
             }+
         }
     
@@ -561,14 +557,12 @@ div {
     ## Similar to label as below, but inherits variable from <names> tag
     name-label-before = element cs:label {
                      attribute form { cs-term-forms }?,
-                     attribute prefix { nospace-prefix}?,
-                     attribute suffix { text }?,
+					 affixes-leading-name-label,
                      label-primitives
                  }
     name-label-after = element cs:label {
                      attribute form { cs-term-forms }?,
-                     attribute prefix { text }?,
-                     attribute suffix { nospace-suffix }?,
+					 affixes-trailing-name-label,
                      label-primitives
                  }
     
@@ -649,7 +643,7 @@ div {
                 ## order, the relevant `date-part`-elements, and by applying formatting,
                 ## affixes on cs:date and cs:date-part.
                 element cs:date-part {
-                    date-affixes, text-case, font-formatting, (month | day | year)
+                    affixes-date, text-case, font-formatting, (month | day | year)
                 }+,
                 delimiter)),
             affixes,
@@ -774,6 +768,7 @@ div {
     group =
         element cs:group {
             affixes,
+            quotes,
             display,
             font-formatting,
             delimiter,
@@ -1043,12 +1038,25 @@ div {
 
 ## Formatting attributes.
 div {
+    ## Strings for use in affixes
+    string-no-leading-space = xsd:string { pattern = "([^ ].*)*" }
+    string-no-trailing-space = xsd:string { pattern = "(.*[^ ])*" }
+
+	# Affixes
     affixes =
-        attribute prefix { nospace-prefix }?,
-        attribute suffix { nospace-suffix }?
-    date-affixes =
+        attribute prefix { string-no-leading-space }?,
+        attribute suffix { string-no-trailing-space }?
+    affixes-date =
         attribute prefix { text }?,
         attribute suffix { text }?
+	affixes-leading-name-label = 
+        attribute prefix { string-no-leading-space }?,
+        attribute suffix { text }?
+	affixes-trailing-name-label = 
+        attribute prefix { text }?,
+        attribute suffix { string-no-trailing-space }?
+
+	# Delimiter
     delimiter = attribute delimiter { text }?
 
     ## The text of each individual cite is normally formatted as a
