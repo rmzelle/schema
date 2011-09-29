@@ -1033,6 +1033,10 @@ div {
         attribute jurisdiction {
             list { jurisdictions+ }
         }
+      |
+        ## Tests whether the statement containing the condition is being
+        ## executed inside cs:citation or cs:bibliography
+        attribute context { "citation" | "bibliography" }
     )
 }
 
