@@ -323,7 +323,10 @@ div {
             
             ## Determines whether punctuation (commas and periods) goes within 
             ## the quotation marks, or outside (default).
-            attribute punctuation-in-quote { xsd:boolean }?
+            attribute punctuation-in-quote { xsd:boolean }?,
+
+            ## Resets the default list of skip-words. List is space-delimited list of arbitrary strings.
+            attribute skip-words { text }?
         }
 }
 [ a:documentation [ xhtml:h2 [ "Macros" ] ] ]
