@@ -505,6 +505,7 @@ div {
     ## Attributes for use in formatting institution names
     institution-attributes =
         delimiter?,
+        attribute form { "long" | "short" }?,
         ## The order of institution subunits can be reversed
         attribute reverse-order { "true" | "false" }?,
         ( 
@@ -596,6 +597,7 @@ div {
                   | attribute name { "short" }
                 ),
                 text-case,
+                strip-periods,
                 font-formatting,
                 affixes
             }*
