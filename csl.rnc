@@ -1042,6 +1042,11 @@ div {
         ## Tests whether the statement containing the condition is being
         ## executed inside cs:citation or cs:bibliography
         attribute context { "citation" | "bibliography" }
+      | 
+        ## Tests whether the first-listed name in the name
+        ## variable is an institution that will render when form="short" and
+        ## use-first="1" are set on cs:institution.
+        attribute institution-use-first { cs-names }
     )
 }
 
