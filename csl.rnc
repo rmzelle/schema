@@ -518,13 +518,11 @@ div {
           ## only if no personal names are present
             attribute substitute-use-first { xsd:integer }
         )?,
-        (
-          ## Always include the last n institutional subunit names
-          attribute use-last { xsd:integer }
-          |
-          ## Always ignore the last n institutional subunit names
-            attribute stop-last { xsd:integer }
-        )?,
+        ## Always include the last n institutional subunit names,
+        ## after first dropping subunits with stop-last
+        attribute use-last { xsd:integer }?,
+        ## Always ignore the last n institutional subunit names
+        attribute stop-last { xsd:integer }?,
         ## Controls which forms of an institutional subunit name
         ## to include
         attribute institution-parts { "long" | "short" | "long-short" | "short-long" }?
