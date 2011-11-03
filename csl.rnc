@@ -1018,7 +1018,7 @@ div {
         ## "near-note" is *always* false for references that are not in a 
         ## footnote/endnote.
         attribute position {
-            list { ("first" | "subsequent" | "ibid" | "ibid-with-locator" | "near-note")+ }
+            list { ("first" | "subsequent" | "ibid" | "ibid-with-locator" | "near-note") }
         }
         
       |
