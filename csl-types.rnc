@@ -9,6 +9,7 @@ div {
     | "book"
     | "broadcast"
     | "chapter"
+    | "classic"
     | "entry"
     | "entry-dictionary"
     | "entry-encyclopedia"
