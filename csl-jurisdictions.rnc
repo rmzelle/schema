@@ -253,6 +253,8 @@ div {
         | "ye"
         | "zm"
         | "zw"
+        | "eec.lex"
+        | "ec.lex"
         | "europa.eu"
         | "imf.org"
         | "un.org"
