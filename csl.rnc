@@ -506,6 +506,7 @@ div {
     institution-attributes =
         delimiter?,
         attribute form { "long" | "short" }?,
+        attribute part-separator { text }?,
         ## The order of institution subunits can be reversed
         attribute reverse-order { "true" | "false" }?,
         ( 
@@ -515,9 +516,15 @@ div {
           |
           ## Include the first n institutional subunit names
           ## only if no personal names are present
-            attribute substitute-use-first { xsd:integer } )?,
-        ## Always include the last n institutional subunit names
-        attribute use-last { xsd:integer }?,
+            attribute substitute-use-first { xsd:integer }
+        )?,
+        (
+          ## Always include the last n institutional subunit names
+          attribute use-last { xsd:integer }
+          |
+          ## Always ignore the last n institutional subunit names
+            attribute stop-last { xsd:integer }
+        )?,
         ## Controls which forms of an institutional subunit name
         ## to include
         attribute institution-parts { "long" | "short" | "long-short" | "short-long" }?
@@ -775,6 +782,9 @@ div {
             affixes,
             quotes,
             display,
+            attribute subgroup-delimiter { text }?,
+            attribute subgroup-delimiter-precedes-last { "contextual" | "always" | "never" }?,
+            attribute oops { text }?,
             font-formatting,
             delimiter,
             cs-element+
@@ -1042,11 +1052,6 @@ div {
         ## Tests whether the statement containing the condition is being
         ## executed inside cs:citation or cs:bibliography
         attribute context { "citation" | "bibliography" }
-      | 
-        ## Tests whether the first-listed name in the name
-        ## variable is an institution that will render when form="short" and
-        ## use-first="1" are set on cs:institution.
-        attribute institution-use-first { cs-names }
     )
 }
 
