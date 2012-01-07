@@ -1050,6 +1050,21 @@ div {
         ## Tests whether the statement containing the condition is being
         ## executed inside cs:citation or cs:bibliography
         attribute context { "citation" | "bibliography" }
+      |
+        ## False if no date value, or date contains a month or season.
+       attribute has-year-only {
+           list { cs-dates+ }
+       }
+      |
+        ## False if no date value, no month or season value, or date contains a day.
+       attribute has-month-or-season-only {
+           list { cs-dates+ }
+       }
+      |
+        ## False if no date value, no month value, or no day value.
+       attribute has-day {
+           list { cs-dates+ }
+       }
     )
 }
 
