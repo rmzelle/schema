@@ -3,6 +3,7 @@
 div {
   cs-names =
     "author"
+    | "authority"
     | "collection-editor"
     | "composer"
     | "container-author"
@@ -36,6 +37,7 @@ div {
     | "number"
     | "number-of-pages"
     | "number-of-volumes"
+    | "page"
     | "supplement"
     | "volume"
 }
@@ -48,7 +50,6 @@ div {
     | "archive"
     | "archive_location"
     | "archive-place"
-    | "authority"
     | "call-number"
     | "citation-label"
     | "citation-number"
@@ -70,13 +71,13 @@ div {
     | "original-publisher"
     | "original-publisher-place"
     | "original-title"
-    | "page"
     | "page-first"
     | "publisher"
     | "publisher-place"
     | "references"
     | "section"
     | "status"
+    | "subjurisdiction"
     | "title"
     | "title-short"
     | "URL"
