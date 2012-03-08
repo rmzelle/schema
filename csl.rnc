@@ -710,7 +710,9 @@ div {
             text-case,
             (
              ## render macro output
-             attribute macro { xsd:NMTOKEN }
+             (
+               attribute macro { xsd:NMTOKEN },
+               attribute label-form { "long" | "short" | "symbol" }?)
              | (
                 ## render localized term
                 attribute term { cs-terms },
