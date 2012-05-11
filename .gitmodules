@@ -1,0 +1,3 @@
+[submodule "official-schema"]
+	path = official-schema
+	url = ../../citation-style-language/schema.git
