@@ -1,3 +1,6 @@
 [submodule "official-schema"]
 	path = official-schema
 	url = ../../citation-style-language/schema.git
+[submodule "mlz-styles"]
+	path = mlz-styles
+	url = ../../fbennett/mlz-styles.git
