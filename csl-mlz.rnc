@@ -8,9 +8,17 @@ dc:description [
     "Relaxes the need for a cs:updated value in the official CSL schema."
 ]
 
+include "csl-jurisdictions.rnc"
 include "official-schema/csl.rnc"{
    info-updated = element cs:updated { xsd:dateTime? }
 }
+
+## Add condition tests
+condition &=
+    ## Tests whether the jurisdiction variable matches the given jurisdictions
+    attribute jurisdiction {
+        list { jurisdictions+ }
+    }?
 
 ## Add item types
 cs-types |=
