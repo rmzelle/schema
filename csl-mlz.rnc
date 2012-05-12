@@ -1,3 +1,4 @@
+namespace a = "http://relaxng.org/ns/compatibility/annotations/1.0"
 namespace cs = "http://purl.org/net/xbiblio/csl"
 namespace dc = "http://purl.org/dc/elements/1.1/"
 
@@ -10,7 +11,23 @@ dc:description [
 
 include "csl-jurisdictions.rnc"
 include "official-schema/csl.rnc"{
-   info-updated = element cs:updated { xsd:dateTime? }
+    info-updated = element cs:updated { xsd:dateTime? }
+
+    ## Allow "locator" variable on cs:number
+    cs-number =
+        ## Use to render a number variable.
+        element cs:number {
+            affixes,
+            display,
+            font-formatting,
+            text-case,
+            attribute variable { cs-numbers | "locator" },
+            
+            ## Number forms: "numeric" ("4"), "ordinal" ("4th"), "long-ordinal"
+            ## ("fourth"), "roman" ("iv").
+            [ a:defaultValue = "numeric" ]
+            attribute form { "numeric" | "ordinal" | "long-ordinal" | "roman" }?
+        }
 }
 
 ## Add condition tests
