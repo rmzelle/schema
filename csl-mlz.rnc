@@ -12,8 +12,12 @@ include "official-schema/csl.rnc"{
    info-updated = element cs:updated { xsd:dateTime? }
 }
 
-## Add "video" item type
+## Add item types
 cs-types |=
     "gazette"
     | "regulation"
     | "video"
+
+## Add variables
+cs-variables |=
+    "hereinafter"
