@@ -13,7 +13,42 @@ include "csl-jurisdictions.rnc"
 include "official-schema/csl.rnc"{
     info-updated = element cs:updated { xsd:dateTime? }
 
-    ## Allow "locator" variable on cs:number
+    ## Allow "label-form" attribute to accompany "macro" on cs:text
+    cs-text =
+        ## Use to call macros, render variables, terms, or verbatim text.
+        element cs:text {
+            affixes,
+            display,
+            font-formatting,
+            quotes,
+            strip-periods,
+            text-case,
+            ((
+             ## Select a macro.
+             attribute macro { xsd:NMTOKEN },
+             attribute label-form { cs-term-forms }?)
+             | (
+                ## Select a term.
+                attribute term { cs-terms },
+                
+                [ a:defaultValue = "long" ]
+                attribute form { cs-term-forms }?,
+                
+                ## Specify term plurality: singular ("false") or plural ("true").
+                [ a:defaultValue = "false" ]
+                attribute plural { xsd:boolean }?)
+             |
+               ## Specify verbatim text.
+               attribute value { text }
+             | (
+                ## Select a variable.
+                attribute variable { cs-variables },
+                
+                [ a:defaultValue = "long" ]
+                attribute form { "short" | "long" }?))
+        }
+    
+    ## Allow "locator" variable, "label-form" attribute on cs:number
     cs-number =
         ## Use to render a number variable.
         element cs:number {
@@ -26,7 +61,9 @@ include "official-schema/csl.rnc"{
             ## Number forms: "numeric" ("4"), "ordinal" ("4th"), "long-ordinal"
             ## ("fourth"), "roman" ("iv").
             [ a:defaultValue = "numeric" ]
-            attribute form { "numeric" | "ordinal" | "long-ordinal" | "roman" }?
+            attribute form { "numeric" | "ordinal" | "long-ordinal" | "roman" }?,
+            
+            attribute label-form { cs-term-forms }?
         }
 }
 
