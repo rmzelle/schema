@@ -11,3 +11,7 @@ dc:description [
 include "official-schema/csl.rnc"{
    info-updated = element cs:updated { xsd:dateTime? }
 }
+
+## Add "video" item type
+cs-types |=
+    "video"
