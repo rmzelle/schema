@@ -14,4 +14,6 @@ include "official-schema/csl.rnc"{
 
 ## Add "video" item type
 cs-types |=
-    "video"
+    "gazette"
+    | "regulation"
+    | "video"
