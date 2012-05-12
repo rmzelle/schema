@@ -43,6 +43,8 @@ div {
         | "kh"
         | "cm"
         | "ca"
+        | "ca;ontario"
+        | "ca;british.columbia"
         | "cv"
         | "ky"
         | "cf"

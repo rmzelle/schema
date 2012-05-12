@@ -109,6 +109,7 @@ div {
   cs-terms.locator =
     "book"
     | "chapter"
+    | "Chapter"
     | "column"
     | "figure"
     | "folio"
@@ -118,8 +119,11 @@ div {
     | "page"
     | "paragraph"
     | "part"
+    | "rule"
+    | "Section"
     | "section"
     | "sub verbo"
+	| "title"
     | "verse"
     |
       ## Locator terms with matching number variables

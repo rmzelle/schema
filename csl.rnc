@@ -712,7 +712,7 @@ div {
              ## render macro output
              (
                attribute macro { xsd:NMTOKEN },
-               attribute label-form { "long" | "short" | "symbol" }?)
+               attribute label-form { cs-term-forms }?)
              | (
                 ## render localized term
                 attribute term { cs-terms },
@@ -747,7 +747,8 @@ div {
             font-formatting,
             text-case,
             attribute variable { cs-numbers | "locator" },
-            attribute form { "numeric" | "ordinal" | "roman" | "long-ordinal" }?
+            attribute form { "numeric" | "ordinal" | "roman" | "long-ordinal" }?,
+            attribute label-form { cs-term-forms }?
         }
 }
 [ a:documentation [ xhtml:h2 [ "Label Text" ] ] ]
@@ -787,6 +788,7 @@ div {
             attribute oops { text }?,
             font-formatting,
             delimiter,
+            attribute is-parallel { xsd:boolean }?,
             cs-element+
         }
 }
@@ -796,6 +798,7 @@ div {
         demote-non-dropping-particle-opt,
         initialize-with-hyphen-opt,
         page-range-format-opt,
+        year-range-format-opt,
         name-opt,
         names-opt
     citation-options =
@@ -826,6 +829,10 @@ div {
     ## (by default no reformatting is applied to the input data).
     page-range-format-opt =
         attribute page-range-format { "expanded" | "minimal" | "minimal-two" | "chicago" }?
+    ## Abbreviation setting of ranges in year dates
+    ## (by default no reformatting is applied to the input data).
+    year-range-format-opt =
+        attribute year-range-format { "expanded" | "minimal" | "minimal-two" | "chicago" }?
     
     ## The collapse options control citation collapsing.
     collapse-opt =
@@ -1000,8 +1007,14 @@ div {
         }
         
       |
-        ## Tests whether the locator matches the given locator variables
+        ## Tests whether the locator label matches the given label
         attribute locator {
+            list { cs-terms.locator+ }
+        }
+        
+      |
+        ## Tests whether the page label matches the given label
+        attribute page {
             list { cs-terms.locator+ }
         }
         
@@ -1067,6 +1080,10 @@ div {
        attribute has-day {
            list { cs-dates+ }
        }
+      |
+       attribute subjurisdictions { xsd:integer }
+      |
+       attribute is-plural { cs-names }
     )
 }
 
@@ -1159,5 +1176,8 @@ div {
             | 
               ## display as sentence case/sentence style
               "sentence"
+            |
+              ## do not perform formatting operations on input
+              "normal"
         }?
 }
