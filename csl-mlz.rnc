@@ -48,7 +48,7 @@ include "official-schema/csl.rnc"{
                 attribute form { "short" | "long" }?))
         }
     
-    ## Allow "locator" variable, "label-form" attribute on cs:number
+    ## Allow "locator" variable on, add "label-form" attribute to cs:number
     cs-number =
         ## Use to render a number variable.
         element cs:number {
@@ -64,6 +64,22 @@ include "official-schema/csl.rnc"{
             attribute form { "numeric" | "ordinal" | "long-ordinal" | "roman" }?,
             
             attribute label-form { cs-term-forms }?
+        }
+
+    ## Add "is-parallel" attribute on cs:group
+    group =
+        ## Use to group rendering elements. Groups are useful for setting a
+        ## delimiter for the group children, for organizing the layout of
+        ## bibliographic entries (using the "display" attribute), and for
+        ## suppressing the rendering of terms and verbatim text when variables
+        ## are empty.
+        element cs:group {
+            affixes,
+            display,
+            font-formatting,
+            delimiter,
+            attribute is-parallel { xsd:boolean }?,
+            cs-element+
         }
 }
 
