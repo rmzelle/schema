@@ -14,7 +14,7 @@ include "official-schema/csl.rnc"{
 }
 
 ## Add condition tests
-condition &=
+condition |=
     ## Tests whether the jurisdiction variable matches the given jurisdictions
     attribute jurisdiction {
         list { jurisdictions+ }
