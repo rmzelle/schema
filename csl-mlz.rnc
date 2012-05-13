@@ -94,14 +94,43 @@ condition |=
         list { jurisdictions+ }
     }?
 
-## Add item types
-cs-types |=
+## Modifications to contents csl-terms.rnc
+div {
+  ## Add name variables
+  cs-terms.locator |=
+    "Chapter"
+    | "rule"
+    | "Section"
+    | "title"
+}
+
+## Modifications to contents csl-types.rnc
+div {
+  ## Add item types
+  cs-types |=
     "gazette"
     | "regulation"
     | "video"
+}
 
-## standard variables
+## Modifications to contents csl-variables.rnc
 div {
+  ## Add name variables
+  cs-names |=
+    "authority"
+    | "director"
+
+  ## Add date variables
+  cs-dates |=
+    "locator-date"
+
+  ## Add number variables
+  cs-numbers |=
+    "page"
+    | "page-first"
+    | "supplement"
+
+  ## standard variables
   cs-strings =
     "abstract"
     | "annote"
@@ -141,18 +170,3 @@ div {
     | "version"
     | "year-suffix"
 }
-
-## Add name variables
-cs-names |=
-    "authority"
-    | "director"
-
-## Add date variables
-cs-dates |=
-    "locator-date"
-
-## Add number variables
-cs-numbers |=
-    "page"
-    | "page-first"
-    | "supplement"
