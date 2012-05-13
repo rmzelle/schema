@@ -93,6 +93,35 @@ include "official-schema/csl.rnc"{
     cs-variables =
         cs-strings
         | cs-numbers
+
+## Add "normal" value on text-case attribute
+text-case =
+    attribute text-case {
+        
+        ## display all text as lowercase
+        "lowercase"
+        |
+          ## display all text as uppercase
+          "uppercase"
+        |
+          ## capitalize first character; other characters
+          ## displayed as is
+          "capitalize-first"
+        |
+          ## capitalize first character of every word;
+          ## other characters displayed lowercase
+          "capitalize-all"
+        |
+          ## display as title case (the Chicago Manual
+          ## of Style calls this "headline style")
+          "title"
+        |
+          ## display as sentence case/sentence style
+          "sentence"
+        |
+          ## do not perform formatting operations on input
+          "normal"
+    }?
 }
 
 ## Institution, used to format institutional subunit names
