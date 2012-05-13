@@ -210,12 +210,23 @@ condition |=
 
 ## Modifications to contents csl-terms.rnc
 div {
-  ## Add name variables
+  ## Add miscellaneous  terms
+  cs-terms |=
+    "unpublished"
+
+  ## Add locator terms
   cs-terms.locator |=
     "Chapter"
     | "rule"
     | "Section"
     | "title"
+
+  ## Add non-locator terms accompanying number variables
+  cs-terms.non-locator-number-variables |=
+    "supplement"
+    |
+      ## Extended numeric terms
+      xsd:string { pattern = "(chapter\-number|collection\-number|edition|issue|note|number|number\-of\-volumes|page|section|volume|)\-\d{2}" }
 }
 
 ## Modifications to contents csl-types.rnc
