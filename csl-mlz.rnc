@@ -12,6 +12,8 @@ dc:description [
 include "csl-jurisdictions.rnc"
 include "official-schema/csl.rnc"{
 
+    version = attribute version { "1.1mlz1" }
+
     ## Allow cs:institution element as child of cs:names
     names =
         element cs:names {
