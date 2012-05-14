@@ -14,6 +14,18 @@ include "official-schema/csl.rnc"{
 
     version = attribute version { "1.1mlz1" }
 
+    localized-options =
+        element cs:style-options {
+        
+            ## Specify whether punctuation (a period or comma) is placed within
+            ## or outside (default) the closing quotation mark.
+            [ a:defaultValue = "false" ]
+            attribute punctuation-in-quote { xsd:boolean }?,
+
+            ## Resets the default list of skip-words. List is space-delimited list of arbitrary strings.
+            attribute skip-words { text }?
+        }
+
     ## Allow cs:institution element as child of cs:names
     names =
         element cs:names {
@@ -84,46 +96,59 @@ include "official-schema/csl.rnc"{
         ## are empty.
         element cs:group {
             affixes,
+            quotes,
             display,
+            attribute subgroup-delimiter { text }?,
+            attribute subgroup-delimiter-precedes-last { "contextual" | "always" | "never" }?,
+            attribute oops { text }?,
             font-formatting,
             delimiter,
             attribute is-parallel { xsd:boolean }?,
             cs-element+
         }
 
+    ##Add year-range-format attribute on cs:style
+    style-options =
+        demote-non-dropping-particle-opt,
+        initialize-with-hyphen-opt,
+        page-range-format-opt,
+        year-range-format-opt,
+        name-opt,
+        names-opt
+        
     ## Separate standard variables from number variables
     cs-variables =
         cs-strings
         | cs-numbers
 
-## Add "normal" value on text-case attribute
-text-case =
-    attribute text-case {
-        
-        ## display all text as lowercase
-        "lowercase"
-        |
-          ## display all text as uppercase
-          "uppercase"
-        |
-          ## capitalize first character; other characters
-          ## displayed as is
-          "capitalize-first"
-        |
-          ## capitalize first character of every word;
-          ## other characters displayed lowercase
-          "capitalize-all"
-        |
-          ## display as title case (the Chicago Manual
-          ## of Style calls this "headline style")
-          "title"
-        |
-          ## display as sentence case/sentence style
-          "sentence"
-        |
-          ## do not perform formatting operations on input
-          "normal"
-    }?
+    ## Add "normal" value on text-case attribute
+    text-case =
+        attribute text-case {
+            
+            ## display all text as lowercase
+            "lowercase"
+            |
+              ## display all text as uppercase
+              "uppercase"
+            |
+              ## capitalize first character; other characters
+              ## displayed as is
+              "capitalize-first"
+            |
+              ## capitalize first character of every word;
+              ## other characters displayed lowercase
+              "capitalize-all"
+            |
+              ## display as title case (the Chicago Manual
+              ## of Style calls this "headline style")
+              "title"
+            |
+              ## display as sentence case/sentence style
+              "sentence"
+            |
+              ## do not perform formatting operations on input
+              "normal"
+        }?
 }
 
 ## Institution, used to format institutional subunit names
@@ -172,7 +197,12 @@ institution-attributes =
     ## Controls which forms of an institutional subunit name
     ## to include
     attribute institution-parts { "long" | "short" | "long-short" | "short-long" }?
-
+    
+## Abbreviation setting of ranges in year dates
+## (by default no reformatting is applied to the input data).
+year-range-format-opt =
+    attribute year-range-format { "expanded" | "minimal" | "minimal-two" | "chicago" }?
+    
 ## Add condition tests
 condition |=
     ## Tests whether the statement containing the condition is being
