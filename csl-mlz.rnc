@@ -151,7 +151,7 @@ include "official-schema/csl.rnc"{
                attribute value { text }
              | (
                 ## Select a variable.
-                attribute variable { cs-variables },
+                attribute variable { cs-strings },
                 
                 [ a:defaultValue = "long" ]
                 attribute form { "short" | "long" }?,
