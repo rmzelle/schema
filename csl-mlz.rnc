@@ -166,6 +166,13 @@ include "official-schema/csl.rnc"{
         }?
 }
 
+## Add "suppress-min", "suppress-max" attributes
+name-attributes |=
+    ## Suppress output if number of names is at or above a min,
+    ## or at or below a max value
+    attribute suppress-min { xsd:integer }?,
+    attribute suppress-max { xsd:integer }?
+
 ## Institution, used to format institutional subunit names
 ## Institutional subunit names always follow personal names
 ## when this element is included in cs:names
