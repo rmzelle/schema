@@ -26,6 +26,18 @@ include "official-schema/csl.rnc"{
             attribute skip-words { text }?
         }
 
+    ## Add support for locale-specific layouts
+    citation = element cs:citation {
+        (citation-options & sort?),
+        citation-layout-locale*,
+        citation-layout-default
+    }
+    bibliography = element cs:bibliography {
+        (bibliography-options & sort?),
+        bibliography-layout-locale*,
+        bibliography-layout-default
+    }
+   
     ## Allow cs:institution element as child of cs:names
     names =
         element cs:names {
@@ -237,6 +249,27 @@ condition |=
       }
     |
       attribute subjurisdictions { xsd:integer }
+
+## Add support for locale-specific layouts 
+citation-layout-locale = element cs:layout { affixes, font-formatting, delimiter, cs-element, layout-locale }
+citation-layout-default = element cs:layout { affixes, font-formatting, delimiter, cs-element }
+
+## Add support for locale-specific layouts, cs:generate 
+bibliography-layout-locale = element cs:layout { affixes, font-formatting, layout-locale, cs-generate, cs-element }
+bibliography-layout-default = element cs:layout { affixes, font-formatting, cs-generate?, cs-element }
+
+cs-generate = element cs:generate {
+    attribute type-map {
+        list { (cs-types, cs-types) }
+    },
+    attribute trigger-fields {
+        list { cs-variables+ }
+    }
+}+
+
+layout-locale = attribute locale {
+    list { xsd:language+ }
+}
 
 ## Modifications to contents csl-terms.rnc
 div {
