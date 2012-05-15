@@ -236,6 +236,80 @@ include "official-schema/csl.rnc"{
         cs-strings
         | cs-numbers
 
+    ## Add conditions, allow "type" on "variable", limit "position" to one
+    ## position
+    condition =
+    
+        ## If used, the element content is only rendered if it disambiguates two
+        ## otherwise identical citations. This attempt at disambiguation is only
+        ## made after all other disambiguation methods have failed.
+        [ a:defaultValue = "true" ]
+        attribute disambiguate { "true" }
+        |
+          ## Tests whether the given variables contain numeric text.
+          attribute is-numeric {
+              list { all-variables+ }
+          }
+        |
+          ## Tests whether the given date variables contain approximate dates.
+          attribute is-uncertain-date {
+              list { cs-dates+ }
+          }
+        |
+          ## Tests whether the locator matches the given locator types.
+          attribute locator {
+              list { (cs-terms.locator | "sub-verbo")+ }
+          }
+        |
+          ## Tests whether the cite position matches the given positions.
+          attribute position {
+              list { ("first" | "subsequent" | "ibid" | "ibid-with-locator" | "near-note") }
+          }
+        |
+          ## Tests whether the item matches the given types.
+          attribute type {
+              list { cs-types+ }
+          }
+        |
+          ## Tests whether the default ("long") forms of the given variables
+          ## contain non-empty values.
+          attribute variable {
+              list { all-variables+ | "type" }
+          }
+        |
+          ## Tests whether the statement containing the condition is being
+          ## executed inside cs:citation or cs:bibliography
+          attribute context { "citation" | "bibliography" }
+        |
+          ## False if no date value, or date contains a month or season.
+          attribute has-year-only {
+              list { cs-dates+ }
+          }
+        |
+          ## False if no date value, no month or season value, or date contains a day.
+          attribute has-month-or-season-only {
+              list { cs-dates+ }
+          }
+        |
+          ## False if no date value, no month value, or no day value.
+          attribute has-day {
+              list { cs-dates+ }
+          }
+        |
+          attribute is-plural { cs-names }
+        |
+          ## Tests whether the jurisdiction variable matches the given jurisdictions
+          attribute jurisdiction {
+              list { jurisdictions+ }
+          }
+        |
+          ## Tests whether the page label matches the given label
+          attribute page {
+              list { cs-terms.locator+ }
+          }
+        |
+          attribute subjurisdictions { xsd:integer }
+
     affixes =
     [ a:defaultValue = "" ]
    attribute prefix { string-no-leading-space }?,
@@ -342,41 +416,6 @@ institution-attributes =
 ## (by default no reformatting is applied to the input data).
 year-range-format-opt =
     attribute year-range-format { "expanded" | "minimal" | "minimal-two" | "chicago" }?
-    
-## Add condition tests
-condition |=
-    ## Tests whether the statement containing the condition is being
-    ## executed inside cs:citation or cs:bibliography
-    attribute context { "citation" | "bibliography" }
-    |
-      ## False if no date value, or date contains a month or season.
-      attribute has-year-only {
-          list { cs-dates+ }
-      }
-    |
-      ## False if no date value, no month or season value, or date contains a day.
-      attribute has-month-or-season-only {
-          list { cs-dates+ }
-      }
-    |
-      ## False if no date value, no month value, or no day value.
-      attribute has-day {
-          list { cs-dates+ }
-      }
-    |
-      attribute is-plural { cs-names }
-    |
-      ## Tests whether the jurisdiction variable matches the given jurisdictions
-      attribute jurisdiction {
-          list { jurisdictions+ }
-      }
-    |
-      ## Tests whether the page label matches the given label
-      attribute page {
-          list { cs-terms.locator+ }
-      }
-    |
-      attribute subjurisdictions { xsd:integer }
 
 ## Add support for locale-specific layouts
 citation-layout-locale = element cs:layout { affixes, font-formatting, delimiter, cs-element, layout-locale }
