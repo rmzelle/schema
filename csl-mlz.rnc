@@ -47,6 +47,7 @@ include "official-schema/csl.rnc"{
         }
 
     ## Allow "label-form" attribute to accompany "macro" on cs:text
+    ## Allow "leading-noise-words" attribute to accompany "variable" on cs:text
     cs-text =
         ## Use to call macros, render variables, terms, or verbatim text.
         element cs:text {
@@ -78,7 +79,9 @@ include "official-schema/csl.rnc"{
                 attribute variable { cs-variables },
                 
                 [ a:defaultValue = "long" ]
-                attribute form { "short" | "long" }?))
+                attribute form { "short" | "long" }?,
+                
+                attribute leading-noise-words { "drop" | "demote" }?))
         }
     
     ## Allow "locator" variable on, add "label-form" attribute to cs:number
@@ -250,11 +253,11 @@ condition |=
     |
       attribute subjurisdictions { xsd:integer }
 
-## Add support for locale-specific layouts 
+## Add support for locale-specific layouts
 citation-layout-locale = element cs:layout { affixes, font-formatting, delimiter, cs-element, layout-locale }
 citation-layout-default = element cs:layout { affixes, font-formatting, delimiter, cs-element }
 
-## Add support for locale-specific layouts, cs:generate 
+## Add support for locale-specific layouts, cs:generate
 bibliography-layout-locale = element cs:layout { affixes, font-formatting, layout-locale, cs-generate, cs-element }
 bibliography-layout-default = element cs:layout { affixes, font-formatting, cs-generate?, cs-element }
 
