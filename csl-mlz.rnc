@@ -14,6 +14,30 @@ include "official-schema/csl.rnc"{
 
     version = attribute version { "1.1mlz1" }
 
+    ## Add affixes-date on cs:date-part
+    localized-dates =
+        element cs:date {
+        
+            ## Select the localized date format ("text" or "numeric") that will
+            ## be defined.
+            attribute form {
+            
+                ## Text date form (e.g., "December 15, 2005" for "en-US").
+                "text"
+                |
+                  ## Numeric date form (e.g., "12-15-2005" for "en-US").
+                  "numeric"
+            },
+            
+            font-formatting,
+            delimiter,
+            text-case,
+            element cs:date-part {
+                affixes-date, text-case, font-formatting, (month | day | year)
+            }+
+        }
+
+    ## Add "skip-words" attribute
     localized-options =
         element cs:style-options {
         
@@ -24,6 +48,56 @@ include "official-schema/csl.rnc"{
 
             ## Resets the default list of skip-words. List is space-delimited list of arbitrary strings.
             attribute skip-words { text }?
+        }
+
+    ## Add affixes-date on cs:date-part
+    date =
+        element cs:date {
+            attribute variable { cs-dates },
+            ((
+              ## Use to select a localized date format.
+              attribute form {
+              
+                  ## Use the localized text form of the date (e.g., "December
+                  ## 15, 2005" for en-US).
+                  "text"
+                  |
+                    ## Use the localized numeric form of the date (e.g.,
+                    ## "12-15-2005" for en-US)
+                    "numeric"
+              },
+              
+              ## Limit the date parts rendered.
+              [ a:defaultValue = "year-month-day" ]
+              attribute date-parts {
+              
+                  ## Year, month and day
+                  "year-month-day"
+                  |
+                    ## Year and month
+                    "year-month"
+                  |
+                    ## Year only
+                    "year"
+              }?,
+              
+              ## Specify overriding formatting for localized dates (affixes
+              ## cannot be overridden, as these are considered locale-specific).
+              ## Example uses are forcing the use of leading-zeros, or of the
+              ## "short" month form. Has no effect on which, and in what order,
+              ## date parts are rendered.
+              element cs:date-part { text-case, font-formatting, (month | day | year) }*)
+             | (
+                ## Specify, in the desired order, the date parts that should be
+                ## rendered and their formatting.
+                element cs:date-part {
+                    affixes-date, text-case, font-formatting, (month | day | year)
+                }+,
+                delimiter)),
+            affixes,
+            display,
+            font-formatting,
+            text-case
         }
 
     ## Add support for locale-specific layouts
@@ -38,11 +112,12 @@ include "official-schema/csl.rnc"{
         bibliography-layout-default
     }
    
-    ## Allow cs:institution element as child of cs:names
+    ## Allow cs:institution element as child element of cs:names, add
+    ## name-label-before, name-label-after
     names =
         element cs:names {
             names-attributes,
-            ((name?, et-al?, institution?) & name-label*),
+            (name-label-before?, name?, et-al?, institution?, name-label-after?),
             substitute?
         }
 
@@ -102,7 +177,32 @@ include "official-schema/csl.rnc"{
             attribute label-form { cs-term-forms }?
         }
 
-    ## Add "is-parallel" attribute on cs:group
+    ## Add affixes
+    label =
+        ## Use to render a term whose pluralization depends on the content of a
+        ## variable. E.g., if "page" variable holds a range, the plural label
+        ## "pp." is selected instead of the singular "p.".
+        element cs:label {
+            label-primitives,
+            affixes,
+            attribute variable { cs-numbers | "locator" | "page" },
+            
+            [ a:defaultValue = "long" ]
+            attribute form { "long" | "short" | "symbol" }?
+        }
+    
+    ## Drop affixes
+    label-primitives =
+        font-formatting,
+        text-case,
+        strip-periods,
+        
+        ## Specify when the plural version of a term is selected.
+        [ a:defaultValue = "contextual" ]
+        attribute plural { "always" | "never" | "contextual" }?
+
+    ## Add "is-parallel", "oops",  "quotes", "subgroup-delimiter",
+    ## "subgroup-delimiter-precedes-last", attribute on cs:group
     group =
         ## Use to group rendering elements. Groups are useful for setting a
         ## delimiter for the group children, for organizing the layout of
@@ -135,6 +235,12 @@ include "official-schema/csl.rnc"{
     cs-variables =
         cs-strings
         | cs-numbers
+
+    affixes =
+    [ a:defaultValue = "" ]
+   attribute prefix { string-no-leading-space }?,
+    [ a:defaultValue = "" ]
+    attribute suffix { string-no-trailing-space }?
 
     ## Add "normal" value on text-case attribute
     text-case =
@@ -172,6 +278,18 @@ name-attributes |=
     ## or at or below a max value
     attribute suppress-min { xsd:integer }?,
     attribute suppress-max { xsd:integer }?
+
+    ## Similar to label as below, but inherits variable from <names> tag
+    name-label-before = element cs:label {
+        attribute form { cs-term-forms }?,
+            affixes-leading-name-label,
+            label-primitives
+        }
+    name-label-after = element cs:label {
+        attribute form { cs-term-forms }?,
+            affixes-trailing-name-label,
+            label-primitives
+        }
 
 ## Institution, used to format institutional subunit names
 ## Institutional subunit names always follow personal names
@@ -280,6 +398,20 @@ cs-generate = element cs:generate {
 layout-locale = attribute locale {
     list { xsd:language+ }
 }
+
+## Strings for use in affixes
+string-no-leading-space = xsd:string { pattern = "([^ ].*)*" }
+string-no-trailing-space = xsd:string { pattern = "(.*[^ ])*" }
+
+affixes-date =
+    attribute prefix { text }?,
+    attribute suffix { text }?
+affixes-leading-name-label =
+    attribute prefix { string-no-leading-space }?,
+    attribute suffix { text }?
+affixes-trailing-name-label =
+    attribute prefix { text }?,
+    attribute suffix { string-no-trailing-space }?
 
 ## Modifications to contents csl-terms.rnc
 div {
