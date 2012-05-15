@@ -240,10 +240,15 @@ condition |=
 
 ## Modifications to contents csl-terms.rnc
 div {
-  ## Add miscellaneous  terms
+  ## Add miscellaneous terms
   cs-terms |=
     "unpublished"
 
+  ## Add support for extended ordinal terms
+  cs-terms.gender-variants |=
+    ## Extended ordinal terms
+    xsd:string { pattern = "ordinal\-\d{2,4}" }
+  
   ## Add locator terms
   cs-terms.locator |=
     "Chapter"
