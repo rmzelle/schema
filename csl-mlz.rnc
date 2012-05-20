@@ -9,131 +9,135 @@ dc:rights [
   "Copyright 2012 by Frank Bennett and Rintze Zelle. Permission to freely use, copy and distribute."
 ]
 dc:description [
-    "Extends the official CSL schema for use with Multilingual Zotero."
+  "Extends the official CSL schema for use with Multilingual Zotero."
 ]
 
 include "csl-jurisdictions.rnc"
-include "official-schema/csl.rnc"{
-
-    version = attribute version { "1.1mlz1" }
-
-    ## Replace affixes by affixes-date on cs:date-part
-    locale.date.date-part = 
-        element cs:date-part {
-          affixes-date, font-formatting, text-case, (day | month | year)
-        }
-
-    ## Add "skip-words" attribute
-    locale.style-options =
-        element cs:style-options {
-        
-            ## Specify whether punctuation (a period or comma) is placed within
-            ## or outside (default) the closing quotation mark.
-            [ a:defaultValue = "false" ]
-            attribute punctuation-in-quote { xsd:boolean }?,
-
-            ## Resets the default list of skip-words. List is space-delimited list of arbitrary strings.
-            attribute skip-words { text }?
-        }
-
-    ## Replace affixes by affixes-date on cs:date-part
-    rendering-element.date.date-part.non-localized =
-    
-        ## Specify, in the desired order, the date parts that should be
-        ## rendered and their formatting.
-        element cs:date-part {
-          affixes-date, font-formatting, text-case, (day | month | year)
-        }
-
-    ## Add support for locale-specific layouts
-    style.citation = element cs:citation {
-        citation.options,
-        sort?,
-        citation.layout-locale*,
-        citation.layout-default
+include "csl.rnc" {
+  version = attribute version { "1.1mlz1" }
+  
+  ## Add "skip-words" attribute
+  locale.style-options =
+    element cs:style-options {
+      
+      ## Specify whether punctuation (a period or comma) is placed within
+      ## or outside (default) the closing quotation mark.
+      [ a:defaultValue = "false" ]
+      attribute punctuation-in-quote { xsd:boolean }?,
+      
+      ## Resets the default list of skip-words. List is space-delimited list of arbitrary strings.
+      attribute skip-words { text }?
     }
-
-    style.bibliography = element cs:bibliography {
-        bibliography.options,
-        sort?,
-        bibliography.layout-locale*,
-        bibliography.layout-default
+  
+  ## Replace affixes by affixes-date on cs:date-part
+  locale.date.date-part =
+    element cs:date-part {
+      affixes-date, font-formatting, text-case, (day | month | year)
     }
-   
-    ## Allow cs:institution element as child element of cs:names, add
-    ## name-label-before, name-label-after
-    rendering-element.names =
-        element cs:names {
-            names.attributes,
-            (name-label-before?, names.name?, names.et-al?, names.institution?, name-label-after?),
-            names.substitute?
-        }
-
-    ## Allow "label-form" attribute to accompany "macro" on cs:text
-    ## Allow "leading-noise-words" attribute to accompany "variable" on cs:text
-    text.attributes =
-       (
-       ## Select a macro.
-       attribute macro { xsd:NMTOKEN },
-       attribute label-form { term.form }?)
-       | (
-          ## Select a term.
-          attribute term { terms },
-          
-          [ a:defaultValue = "long" ]
-          attribute form { term.form }?,
-          
-          ## Specify term plurality: singular ("false") or plural ("true").
-          [ a:defaultValue = "false" ]
-          attribute plural { xsd:boolean }?)
-       |
-         ## Specify verbatim text.
-         attribute value { text }
-       | (
-          ## Select a variable.
-          attribute variable { variables.strings },
-          
-          [ a:defaultValue = "long" ]
-          attribute form { "short" | "long" }?,
-          
-          attribute leading-noise-words { "drop" | "demote" }?)
+  
+  ## Add support for locale-specific layouts
+  style.citation =
+    element cs:citation {
+      citation.options,
+      sort?,
+      citation.layout-locale*,
+      citation.layout-default
+    }
+  style.bibliography =
+    element cs:bibliography {
+      bibliography.options,
+      sort?,
+      bibliography.layout-locale*,
+      bibliography.layout-default
+    }
+  
+  ## Allow cs:institution element as child element of cs:names, add
+  ## name-label-before, name-label-after
+  rendering-element.names =
+    element cs:names {
+      names.attributes,
+      (names.label-before?,
+       names.name?,
+       names.et-al?,
+       names.institution?,
+       names.label-after?),
+      names.substitute?
+    }
+  
+  ## Replace affixes by affixes-date on cs:date-part
+  rendering-element.date.date-part.non-localized =
     
-    ## Allow "locator" variable on, add "label-form" attribute to cs:number
-    number.attributes =
-        attribute variable { variables.numbers | "locator" },
-        
-        ## Number forms: "numeric" ("4"), "ordinal" ("4th"), "long-ordinal"
-        ## ("fourth"), "roman" ("iv").
-        [ a:defaultValue = "numeric" ]
-        attribute form { "numeric" | "ordinal" | "long-ordinal" | "roman" }?,
-            
-        attribute label-form { term.form }?
+    ## Specify, in the desired order, the date parts that should be
+    ## rendered and their formatting.
+    element cs:date-part {
+      affixes-date, font-formatting, text-case, (day | month | year)
+    }
+  
+  ## Allow "label-form" attribute to accompany "macro" on cs:text
+  ## Allow "leading-noise-words" attribute to accompany "variable" on cs:text
+  text.attributes =
+    (
+     ## Select a macro.
+     attribute macro { xsd:NMTOKEN },
+     attribute label-form { term.form }?)
+    | (
+       ## Select a term.
+       attribute term { terms },
+       [ a:defaultValue = "long" ] attribute form { term.form }?,
+       
+       ## Specify term plurality: singular ("false") or plural ("true").
+       [ a:defaultValue = "false" ] attribute plural { xsd:boolean }?)
+    | 
+      ## Specify verbatim text.
+      attribute value { text }
+    | (
+       ## Select a variable.
+       attribute variable { variables.strings },
+       [ a:defaultValue = "long" ] attribute form { "short" | "long" }?,
+       attribute leading-noise-words { "drop" | "demote" }?)
+  
+  ## Allow "locator" variable on, add "label-form" attribute to cs:number
+  number.attributes =
+    attribute variable { variables.numbers | "locator" },
     
-    ## Drop affixes
-    label.attributes-shared =
-        ## Specify when the plural version of a term is selected.
-        [ a:defaultValue = "contextual" ]
-        attribute plural { "always" | "never" | "contextual" }?,
-        font-formatting,
-        strip-periods,
-        text-case
-        
-    ## Add back affixes (removed from label.attributes-shared)
-    label.attributes =
-      attribute variable { variables.numbers | "locator" | "page" },
-      [ a:defaultValue = "long" ]
-      attribute form { "long" | "short" | "symbol" }?,
-      affixes
-
-    ## Add "is-parallel", "oops",  "quotes", "subgroup-delimiter",
-    ## "subgroup-delimiter-precedes-last", attribute on cs:group
-    group.attributes =
-        quotes,
-        attribute subgroup-delimiter { text }?,
-        attribute subgroup-delimiter-precedes-last { "contextual" | "always" | "never" }?,
-        attribute oops { text }?,
-        attribute is-parallel { list{ ( xsd:boolean | "master" | "servant" )+ } }?
-
+    ## Number forms: "numeric" ("4"), "ordinal" ("4th"), "long-ordinal"
+    ## ("fourth"), "roman" ("iv").
+    [ a:defaultValue = "numeric" ]
+    attribute form {
+      "numeric" | "ordinal" | "long-ordinal" | "roman"
+    }?,
+    attribute label-form { term.form }?
+  
+  ## Drop affixes
+  label.attributes-shared =
+    
+    ## Specify when the plural version of a term is selected.
+    [ a:defaultValue = "contextual" ]
+    attribute plural { "always" | "never" | "contextual" }?,
+    font-formatting,
+    strip-periods,
+    text-case
+  
+  ## Add back affixes (removed from label.attributes-shared)
+  label.attributes =
+    attribute variable { variables.numbers | "locator" | "page" },
+    [ a:defaultValue = "long" ]
+    attribute form { "long" | "short" | "symbol" }?,
+    affixes
+  
+  ## Add "is-parallel", "oops",  "quotes", "subgroup-delimiter",
+  ## "subgroup-delimiter-precedes-last", attribute on cs:group
+  group.attributes =
+    quotes,
+    attribute subgroup-delimiter { text }?,
+    attribute subgroup-delimiter-precedes-last {
+      "contextual" | "always" | "never"
+    }?,
+    attribute oops { text }?,
+    attribute is-parallel {
+      list { (xsd:boolean | "master" | "servant")+ }
+    }?
+  
   style.options =
     style.demote-non-dropping-particle,
     style.initialize-with-hyphen,
@@ -141,116 +145,119 @@ include "official-schema/csl.rnc"{
     style.year-range-format,
     names-inheritable-options,
     name-inheritable-options
-        
-    ## Add conditions, allow "type" on "variable", limit "position" to one
-    ## position
-    condition =
+  
+  ## Add conditions, allow "type" on "variable", limit "position" to one
+  ## position
+  condition =
     
-        ## If used, the element content is only rendered if it disambiguates two
-        ## otherwise identical citations. This attempt at disambiguation is only
-        ## made after all other disambiguation methods have failed.
-        [ a:defaultValue = "true" ]
-        attribute disambiguate { "true" }
-        |
-          ## Tests whether the given variables contain numeric text.
-          attribute is-numeric {
-              list { variables+ }
-          }
-        |
-          ## Tests whether the given date variables contain approximate dates.
-          attribute is-uncertain-date {
-              list { variables.dates+ }
-          }
-        |
-          ## Tests whether the locator matches the given locator types.
-          attribute locator {
-              list { (terms.locator | "sub-verbo")+ }
-          }
-        |
-          ## Tests whether the cite position matches the given positions.
-          attribute position {
-              list { ("first" | "subsequent" | "ibid" | "ibid-with-locator" | "near-note") }
-          }
-        |
-          ## Tests whether the item matches the given types.
-          attribute type {
-              list { item-types+ }
-          }
-        |
-          ## Tests whether the default ("long") forms of the given variables
-          ## contain non-empty values.
-          attribute variable {
-              list { variables+ | "type" }
-          }
-        |
-          ## Tests whether the statement containing the condition is being
-          ## executed inside cs:citation or cs:bibliography
-          attribute context { "citation" | "bibliography" }
-        |
-          ## False if no date value, or date contains a month or season.
-          attribute has-year-only {
-              list { variables.dates+ }
-          }
-        |
-          ## False if no date value, no month or season value, or date contains a day.
-          attribute has-month-or-season-only {
-              list { variables.dates+ }
-          }
-        |
-          ## False if no date value, no month value, or no day value.
-          attribute has-day {
-              list { variables.dates+ }
-          }
-        |
-          attribute is-plural { variables.names }
-        |
-          ## Tests whether the jurisdiction variable matches the given jurisdictions
-          attribute jurisdiction {
-              list { jurisdictions+ }
-          }
-        |
-          ## Tests whether the page label matches the given label
-          attribute page {
-              list { terms.locator+ }
-          }
-        |
-          attribute subjurisdictions { xsd:integer }
-
-    affixes =
+    ## If used, the element content is only rendered if it disambiguates two
+    ## otherwise identical citations. This attempt at disambiguation is only
+    ## made after all other disambiguation methods have failed.
+    [ a:defaultValue = "true" ] attribute disambiguate { "true" }
+    | 
+      ## Tests whether the given variables contain numeric text.
+      attribute is-numeric {
+        list { variables+ }
+      }
+    | 
+      ## Tests whether the given date variables contain approximate dates.
+      attribute is-uncertain-date {
+        list { variables.dates+ }
+      }
+    | 
+      ## Tests whether the locator matches the given locator types.
+      attribute locator {
+        list { (terms.locator | "sub-verbo")+ }
+      }
+    | 
+      ## Tests whether the cite position matches the given positions.
+      attribute position {
+        list {
+          "first"
+          | "subsequent"
+          | "ibid"
+          | "ibid-with-locator"
+          | "near-note"
+        }
+      }
+    | 
+      ## Tests whether the item matches the given types.
+      attribute type {
+        list { item-types+ }
+      }
+    | 
+      ## Tests whether the default ("long") forms of the given variables
+      ## contain non-empty values.
+      attribute variable {
+        list { variables+ | "type" }
+      }
+    | 
+      ## Tests whether the statement containing the condition is being
+      ## executed inside cs:citation or cs:bibliography
+      attribute context { "citation" | "bibliography" }
+    | 
+      ## False if no date value, or date contains a month or season.
+      attribute has-year-only {
+        list { variables.dates+ }
+      }
+    | 
+      ## False if no date value, no month or season value, or date contains a day.
+      attribute has-month-or-season-only {
+        list { variables.dates+ }
+      }
+    | 
+      ## False if no date value, no month value, or no day value.
+      attribute has-day {
+        list { variables.dates+ }
+      }
+    | attribute is-plural { variables.names }
+    | 
+      ## Tests whether the jurisdiction variable matches the given jurisdictions
+      attribute jurisdiction {
+        list { jurisdictions+ }
+      }
+    | 
+      ## Tests whether the page label matches the given label
+      attribute page {
+        list { terms.locator+ }
+      }
+    | attribute subjurisdictions { xsd:integer }
+  
+  affixes =
     [ a:defaultValue = "" ]
-   attribute prefix { string-no-leading-space }?,
+    attribute prefix { string-no-leading-space }?,
     [ a:defaultValue = "" ]
     attribute suffix { string-no-trailing-space }?
-
-    ## Add "normal" value on text-case attribute
-    text-case =
-        attribute text-case {
-            
-            ## display all text as lowercase
-            "lowercase"
-            |
-              ## display all text as uppercase
-              "uppercase"
-            |
-              ## capitalize first character; other characters
-              ## displayed as is
-              "capitalize-first"
-            |
-              ## capitalize first character of every word;
-              ## other characters displayed lowercase
-              "capitalize-all"
-            |
-              ## display as title case (the Chicago Manual
-              ## of Style calls this "headline style")
-              "title"
-            |
-              ## display as sentence case/sentence style
-              "sentence"
-            |
-              ## do not perform formatting operations on input
-              "normal"
-        }?
-        
+  
+  ## Add "normal" value on text-case attribute
+  text-case =
+    attribute text-case {
+      
+      ## display all text as lowercase
+      "lowercase"
+      | 
+        ## display all text as uppercase
+        "uppercase"
+      | 
+        ## capitalize first character; other characters
+        ## displayed as is
+        "capitalize-first"
+      | 
+        ## capitalize first character of every word;
+        ## other characters displayed lowercase
+        "capitalize-all"
+      | 
+        ## display as title case (the Chicago Manual
+        ## of Style calls this "headline style")
+        "title"
+      | 
+        ## display as sentence case/sentence style
+        "sentence"
+      | 
+        ## do not perform formatting operations on input
+        "normal"
+    }?
+  
   ## standard variables
   variables.strings =
     "abstract"
@@ -292,166 +299,191 @@ include "official-schema/csl.rnc"{
     | "year-suffix"
 }
 
+## Add support for locale-specific layouts
+citation.layout-locale =
+  element cs:layout {
+    affixes,
+    delimiter,
+    font-formatting,
+    layout.locale,
+    rendering-element+
+  }
+
+citation.layout-default =
+  element cs:layout {
+    affixes, delimiter, font-formatting, rendering-element+
+  }
+
+## Add support for locale-specific layouts, cs:generate
+bibliography.layout-locale =
+  element cs:layout {
+    affixes,
+    font-formatting,
+    layout.locale,
+    layout.generate,
+    rendering-element+
+  }
+
+bibliography.layout-default =
+  element cs:layout {
+    affixes, font-formatting, layout.generate?, rendering-element+
+  }
+
+layout.generate =
+  element cs:generate {
+    attribute type-map {
+      list { item-types, item-types }
+    },
+    attribute trigger-fields {
+      list { variables.standard+ }
+    }
+  }+
+
+layout.locale =
+  attribute locale {
+    list { xsd:language+ }
+  }
+
 ## Add "suppress-min", "suppress-max" attributes
 name.attributes |=
-    ## Suppress output if number of names is at or above a min,
-    ## or at or below a max value
-    attribute suppress-min { xsd:integer }?,
-    attribute suppress-max { xsd:integer }?
+  
+  ## Suppress output if number of names is at or above a min,
+  ## or at or below a max value
+  attribute suppress-min { xsd:integer }?,
+  attribute suppress-max { xsd:integer }?
 
-## Similar to label as below, but inherits variable from <names> tag
-name-label-before = element cs:label {
+## Similar to label, but inherits variable from <names> tag
+names.label-before =
+  element cs:label {
     attribute form { term.form }?,
-        affixes-leading-name-label,
-        label.attributes-shared
-    }
-name-label-after = element cs:label {
+    affixes-leading-name-label,
+    label.attributes-shared
+  }
+names.label-after =
+  element cs:label {
     attribute form { term.form }?,
-        affixes-trailing-name-label,
-        label.attributes-shared
-    }
+    affixes-trailing-name-label,
+    label.attributes-shared
+  }
 
 ## Institution, used to format institutional subunit names
 ## Institutional subunit names always follow personal names
 ## when this element is included in cs:names
 names.institution =
-    element cs:institution {
-        institution-attributes,
-        ## formatting and affixes of long and short
-        ## forms may be controlled individually
-        element cs:institution-part {
-            ( ( attribute name { "long" },
-                ## apply formatting to long form only
-                ## if short form is also available
-                attribute if-short { "true" | "false" }? )
-              | attribute name { "short" }
-            ),
-            text-case,
-            strip-periods,
-            font-formatting,
-            affixes
-        }*
-    }
+  element cs:institution {
+    institution-attributes,
+    
+    ## formatting and affixes of long and short
+    ## forms may be controlled individually
+    element cs:institution-part {
+      ((attribute name { "long" },
+        
+        ## apply formatting to long form only
+        ## if short form is also available
+        attribute if-short { "true" | "false" }?)
+       | attribute name { "short" }),
+      text-case,
+      strip-periods,
+      font-formatting,
+      affixes
+    }*
+  }
 
 ## Attributes for use in formatting institution names
 institution-attributes =
-    delimiter?,
-    attribute form { "long" | "short" }?,
-    attribute part-separator { text }?,
-    ## The order of institution subunits can be reversed
-    attribute reverse-order { "true" | "false" }?,
-    (
-      ## Include the first n institutional subunit names,
-      ## even when a personal name is also present
-      attribute use-first { xsd:integer }
-      |
-      ## Include the first n institutional subunit names
-      ## only if no personal names are present
-        attribute substitute-use-first { xsd:integer }
-    )?,
-    ## Controls appearance of "and"/"&". Default is "none".
-    attribute and { "text" | "symbol" | "none" }?,
-    ## Always include the last n institutional subunit names,
-    ## after first dropping subunits with stop-last
-    attribute use-last { xsd:integer }?,
-    ## Always ignore the last n institutional subunit names
-    attribute stop-last { xsd:integer }?,
-    ## Controls which forms of an institutional subunit name
-    ## to include
-    attribute institution-parts { "long" | "short" | "long-short" | "short-long" }?
-    
+  delimiter?,
+  attribute form { "long" | "short" }?,
+  attribute part-separator { text }?,
+  
+  ## The order of institution subunits can be reversed
+  attribute reverse-order { "true" | "false" }?,
+  (
+   ## Include the first n institutional subunit names,
+   ## even when a personal name is also present
+   attribute use-first { xsd:integer }
+   | 
+     ## Include the first n institutional subunit names
+     ## only if no personal names are present
+     attribute substitute-use-first { xsd:integer })?,
+  
+  ## Controls appearance of "and"/"&". Default is "none".
+  attribute and { "text" | "symbol" | "none" }?,
+  
+  ## Always include the last n institutional subunit names,
+  ## after first dropping subunits with stop-last
+  attribute use-last { xsd:integer }?,
+  
+  ## Always ignore the last n institutional subunit names
+  attribute stop-last { xsd:integer }?,
+  
+  ## Controls which forms of an institutional subunit name
+  ## to include
+  attribute institution-parts {
+    "long" | "short" | "long-short" | "short-long"
+  }?
+
 ## Abbreviation setting of ranges in year dates
 ## (by default no reformatting is applied to the input data).
 style.year-range-format =
-    attribute year-range-format { "expanded" | "minimal" | "minimal-two" | "chicago" }?
-
-## Add support for locale-specific layouts
-citation.layout-locale = element cs:layout { affixes, delimiter, font-formatting, rendering-element+, layout-locale }
-citation.layout-default = element cs:layout { affixes, delimiter, font-formatting, rendering-element+ }
-
-## Add support for locale-specific layouts, cs:generate
-bibliography.layout-locale = element cs:layout { affixes, font-formatting, layout-locale, cs-generate, rendering-element+ }
-bibliography.layout-default = element cs:layout { affixes, font-formatting, cs-generate?, rendering-element+ }
-
-cs-generate = element cs:generate {
-    attribute type-map {
-        list { (item-types, item-types) }
-    },
-    attribute trigger-fields {
-        list { variables.standard+ }
-    }
-}+
-
-layout-locale = attribute locale {
-    list { xsd:language+ }
-}
+  attribute year-range-format {
+    "expanded" | "minimal" | "minimal-two" | "chicago"
+  }?
 
 ## Strings for use in affixes
 string-no-leading-space = xsd:string { pattern = "([^ ].*)*" }
 string-no-trailing-space = xsd:string { pattern = "(.*[^ ])*" }
 
 affixes-date =
-    attribute prefix { text }?,
-    attribute suffix { text }?
+  attribute prefix { text }?,
+  attribute suffix { text }?
 affixes-leading-name-label =
-    attribute prefix { string-no-leading-space }?,
-    attribute suffix { text }?
+  attribute prefix { string-no-leading-space }?,
+  attribute suffix { text }?
 affixes-trailing-name-label =
-    attribute prefix { text }?,
-    attribute suffix { string-no-trailing-space }?
+  attribute prefix { text }?,
+  attribute suffix { string-no-trailing-space }?
 
 ## Modifications to contents csl-terms.rnc
 div {
+  
   ## Add miscellaneous terms
-  terms |=
-    "unpublished"
-
+  terms |= "unpublished"
+  
   ## Add support for extended ordinal terms
   terms.gender-variants |=
+    
     ## Extended ordinal terms
     xsd:string { pattern = "ordinal\-\d{2,4}" }
   
   ## Add locator terms
-  terms.locator |=
-    "article"
-    | "Chapter"
-    | "rule"
-    | "Section"
-    | "title"
-
+  terms.locator |= "article" | "Chapter" | "rule" | "Section" | "title"
+  
   ## Add non-locator terms accompanying number variables
   terms.non-locator-number-variables |=
     "supplement"
-    |
+    | 
       ## Extended numeric terms
-      xsd:string { pattern = "(chapter\-number|collection\-number|edition|issue|note|number|number\-of\-volumes|page|section|volume|)\-\d{2}" }
+      xsd:string {
+        pattern =
+          "(chapter\-number|collection\-number|edition|issue|note|number|number\-of\-volumes|page|section|volume|)\-\d{2}"
+      }
 }
 
 ## Additional item types (csl-types.rnc)
 div {
   item-types |=
-    "classic"
-    | "gazette"
-    | "periodical"
-    | "regulation"
-    | "video"
+    "classic" | "gazette" | "periodical" | "regulation" | "video"
 }
 
 ## Additional variables (csl-variables.rnc)
 div {
+  
   ## Add name variables
-  variables.names |=
-    "authority"
-    | "director"
-
+  variables.names |= "authority" | "director"
+  
   ## Add date variables
-  variables.dates |=
-    "available-date"
-    | "locator-date"
-
+  variables.dates |= "available-date" | "locator-date"
+  
   ## Add number variables
-  variables.numbers |=
-    "page"
-    | "page-first"
-    | "supplement"
+  variables.numbers |= "page" | "page-first" | "supplement"
 }
