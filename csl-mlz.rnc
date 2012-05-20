@@ -2,11 +2,14 @@ namespace a = "http://relaxng.org/ns/compatibility/annotations/1.0"
 namespace cs = "http://purl.org/net/xbiblio/csl"
 namespace dc = "http://purl.org/dc/elements/1.1/"
 
-dc:title [ "Citation Style Language Schema - Relaxed" ]
-dc:creator [ "Bruce D'Arcus" ]
-dc:rights [ "Permission to freely use, copy and distribute." ]
+dc:title [ "Citation Style Language - Extension Schema for MLZ" ]
+dc:creator [ "Frank Bennett" ]
+dc:creator [ "Rintze Zelle" ]
+dc:rights [
+  "Copyright 2012 by Frank Bennett and Rintze Zelle. Permission to freely use, copy and distribute."
+]
 dc:description [
-    "Relaxes the need for a cs:updated value in the official CSL schema."
+    "Extends the official CSL schema for use with Multilingual Zotero."
 ]
 
 include "csl-jurisdictions.rnc"
@@ -14,31 +17,14 @@ include "official-schema/csl.rnc"{
 
     version = attribute version { "1.1mlz1" }
 
-    ## Add affixes-date on cs:date-part
-    localized-dates =
-        element cs:date {
-        
-            ## Select the localized date format ("text" or "numeric") that will
-            ## be defined.
-            attribute form {
-            
-                ## Text date form (e.g., "December 15, 2005" for "en-US").
-                "text"
-                |
-                  ## Numeric date form (e.g., "12-15-2005" for "en-US").
-                  "numeric"
-            },
-            
-            font-formatting,
-            delimiter,
-            text-case,
-            element cs:date-part {
-                affixes-date, text-case, font-formatting, (month | day | year)
-            }+
+    ## Replace affixes by affixes-date on cs:date-part
+    locale.date.date-part = 
+        element cs:date-part {
+          affixes-date, font-formatting, text-case, (day | month | year)
         }
 
     ## Add "skip-words" attribute
-    localized-options =
+    locale.style-options =
         element cs:style-options {
         
             ## Specify whether punctuation (a period or comma) is placed within
@@ -50,192 +36,112 @@ include "official-schema/csl.rnc"{
             attribute skip-words { text }?
         }
 
-    ## Add affixes-date on cs:date-part
-    date =
-        element cs:date {
-            attribute variable { cs-dates },
-            ((
-              ## Use to select a localized date format.
-              attribute form {
-              
-                  ## Use the localized text form of the date (e.g., "December
-                  ## 15, 2005" for en-US).
-                  "text"
-                  |
-                    ## Use the localized numeric form of the date (e.g.,
-                    ## "12-15-2005" for en-US)
-                    "numeric"
-              },
-              
-              ## Limit the date parts rendered.
-              [ a:defaultValue = "year-month-day" ]
-              attribute date-parts {
-              
-                  ## Year, month and day
-                  "year-month-day"
-                  |
-                    ## Year and month
-                    "year-month"
-                  |
-                    ## Year only
-                    "year"
-              }?,
-              
-              ## Specify overriding formatting for localized dates (affixes
-              ## cannot be overridden, as these are considered locale-specific).
-              ## Example uses are forcing the use of leading-zeros, or of the
-              ## "short" month form. Has no effect on which, and in what order,
-              ## date parts are rendered.
-              element cs:date-part { text-case, font-formatting, (month | day | year) }*)
-             | (
-                ## Specify, in the desired order, the date parts that should be
-                ## rendered and their formatting.
-                element cs:date-part {
-                    affixes-date, text-case, font-formatting, (month | day | year)
-                }+,
-                delimiter)),
-            affixes,
-            display,
-            font-formatting,
-            text-case
+    ## Replace affixes by affixes-date on cs:date-part
+    rendering-element.date.date-part.non-localized =
+    
+        ## Specify, in the desired order, the date parts that should be
+        ## rendered and their formatting.
+        element cs:date-part {
+          affixes-date, font-formatting, text-case, (day | month | year)
         }
 
     ## Add support for locale-specific layouts
-    citation = element cs:citation {
-        (citation-options & sort?),
-        citation-layout-locale*,
-        citation-layout-default
+    style.citation = element cs:citation {
+        citation.options,
+        sort?,
+        citation.layout-locale*,
+        citation.layout-default
     }
-    bibliography = element cs:bibliography {
-        (bibliography-options & sort?),
-        bibliography-layout-locale*,
-        bibliography-layout-default
+
+    style.bibliography = element cs:bibliography {
+        bibliography.options,
+        sort?,
+        bibliography.layout-locale*,
+        bibliography.layout-default
     }
    
     ## Allow cs:institution element as child element of cs:names, add
     ## name-label-before, name-label-after
-    names =
+    rendering-element.names =
         element cs:names {
-            names-attributes,
-            (name-label-before?, name?, et-al?, institution?, name-label-after?),
-            substitute?
+            names.attributes,
+            (name-label-before?, names.name?, names.et-al?, names.institution?, name-label-after?),
+            names.substitute?
         }
 
     ## Allow "label-form" attribute to accompany "macro" on cs:text
     ## Allow "leading-noise-words" attribute to accompany "variable" on cs:text
-    cs-text =
-        ## Use to call macros, render variables, terms, or verbatim text.
-        element cs:text {
-            affixes,
-            display,
-            font-formatting,
-            quotes,
-            strip-periods,
-            text-case,
-            ((
-             ## Select a macro.
-             attribute macro { xsd:NMTOKEN },
-             attribute label-form { cs-term-forms }?)
-             | (
-                ## Select a term.
-                attribute term { cs-terms },
-                
-                [ a:defaultValue = "long" ]
-                attribute form { cs-term-forms }?,
-                
-                ## Specify term plurality: singular ("false") or plural ("true").
-                [ a:defaultValue = "false" ]
-                attribute plural { xsd:boolean }?)
-             |
-               ## Specify verbatim text.
-               attribute value { text }
-             | (
-                ## Select a variable.
-                attribute variable { cs-strings },
-                
-                [ a:defaultValue = "long" ]
-                attribute form { "short" | "long" }?,
-                
-                attribute leading-noise-words { "drop" | "demote" }?))
-        }
+    text.attributes =
+       (
+       ## Select a macro.
+       attribute macro { xsd:NMTOKEN },
+       attribute label-form { term.form }?)
+       | (
+          ## Select a term.
+          attribute term { terms },
+          
+          [ a:defaultValue = "long" ]
+          attribute form { term.form }?,
+          
+          ## Specify term plurality: singular ("false") or plural ("true").
+          [ a:defaultValue = "false" ]
+          attribute plural { xsd:boolean }?)
+       |
+         ## Specify verbatim text.
+         attribute value { text }
+       | (
+          ## Select a variable.
+          attribute variable { variables.strings },
+          
+          [ a:defaultValue = "long" ]
+          attribute form { "short" | "long" }?,
+          
+          attribute leading-noise-words { "drop" | "demote" }?)
     
     ## Allow "locator" variable on, add "label-form" attribute to cs:number
-    cs-number =
-        ## Use to render a number variable.
-        element cs:number {
-            affixes,
-            display,
-            font-formatting,
-            text-case,
-            attribute variable { cs-numbers | "locator" },
+    number.attributes =
+        attribute variable { variables.numbers | "locator" },
+        
+        ## Number forms: "numeric" ("4"), "ordinal" ("4th"), "long-ordinal"
+        ## ("fourth"), "roman" ("iv").
+        [ a:defaultValue = "numeric" ]
+        attribute form { "numeric" | "ordinal" | "long-ordinal" | "roman" }?,
             
-            ## Number forms: "numeric" ("4"), "ordinal" ("4th"), "long-ordinal"
-            ## ("fourth"), "roman" ("iv").
-            [ a:defaultValue = "numeric" ]
-            attribute form { "numeric" | "ordinal" | "long-ordinal" | "roman" }?,
-            
-            attribute label-form { cs-term-forms }?
-        }
-
-    ## Add affixes
-    label =
-        ## Use to render a term whose pluralization depends on the content of a
-        ## variable. E.g., if "page" variable holds a range, the plural label
-        ## "pp." is selected instead of the singular "p.".
-        element cs:label {
-            label-primitives,
-            affixes,
-            attribute variable { cs-numbers | "locator" | "page" },
-            
-            [ a:defaultValue = "long" ]
-            attribute form { "long" | "short" | "symbol" }?
-        }
+        attribute label-form { term.form }?
     
     ## Drop affixes
-    label-primitives =
-        font-formatting,
-        text-case,
-        strip-periods,
-        
+    label.attributes-shared =
         ## Specify when the plural version of a term is selected.
         [ a:defaultValue = "contextual" ]
-        attribute plural { "always" | "never" | "contextual" }?
+        attribute plural { "always" | "never" | "contextual" }?,
+        font-formatting,
+        strip-periods,
+        text-case
+        
+    ## Add back affixes (removed from label.attributes-shared)
+    label.attributes =
+      attribute variable { variables.numbers | "locator" | "page" },
+      [ a:defaultValue = "long" ]
+      attribute form { "long" | "short" | "symbol" }?,
+      affixes
 
     ## Add "is-parallel", "oops",  "quotes", "subgroup-delimiter",
     ## "subgroup-delimiter-precedes-last", attribute on cs:group
-    group =
-        ## Use to group rendering elements. Groups are useful for setting a
-        ## delimiter for the group children, for organizing the layout of
-        ## bibliographic entries (using the "display" attribute), and for
-        ## suppressing the rendering of terms and verbatim text when variables
-        ## are empty.
-        element cs:group {
-            affixes,
-            quotes,
-            display,
-            attribute subgroup-delimiter { text }?,
-            attribute subgroup-delimiter-precedes-last { "contextual" | "always" | "never" }?,
-            attribute oops { text }?,
-            font-formatting,
-            delimiter,
-            attribute is-parallel { xsd:boolean }?,
-            cs-element+
-        }
+    group.attributes =
+        quotes,
+        attribute subgroup-delimiter { text }?,
+        attribute subgroup-delimiter-precedes-last { "contextual" | "always" | "never" }?,
+        attribute oops { text }?,
+        attribute is-parallel { list{ ( xsd:boolean | "master" | "servant" )+ } }?
 
-    ##Add year-range-format attribute on cs:style
-    style-options =
-        demote-non-dropping-particle-opt,
-        initialize-with-hyphen-opt,
-        page-range-format-opt,
-        year-range-format-opt,
-        name-opt,
-        names-opt
+  style.options =
+    style.demote-non-dropping-particle,
+    style.initialize-with-hyphen,
+    style.page-range-format,
+    style.year-range-format,
+    names-inheritable-options,
+    name-inheritable-options
         
-    ## Separate standard variables from number variables
-    cs-variables =
-        cs-strings
-        | cs-numbers
-
     ## Add conditions, allow "type" on "variable", limit "position" to one
     ## position
     condition =
@@ -248,17 +154,17 @@ include "official-schema/csl.rnc"{
         |
           ## Tests whether the given variables contain numeric text.
           attribute is-numeric {
-              list { all-variables+ }
+              list { variables+ }
           }
         |
           ## Tests whether the given date variables contain approximate dates.
           attribute is-uncertain-date {
-              list { cs-dates+ }
+              list { variables.dates+ }
           }
         |
           ## Tests whether the locator matches the given locator types.
           attribute locator {
-              list { (cs-terms.locator | "sub-verbo")+ }
+              list { (terms.locator | "sub-verbo")+ }
           }
         |
           ## Tests whether the cite position matches the given positions.
@@ -268,13 +174,13 @@ include "official-schema/csl.rnc"{
         |
           ## Tests whether the item matches the given types.
           attribute type {
-              list { cs-types+ }
+              list { item-types+ }
           }
         |
           ## Tests whether the default ("long") forms of the given variables
           ## contain non-empty values.
           attribute variable {
-              list { all-variables+ | "type" }
+              list { variables+ | "type" }
           }
         |
           ## Tests whether the statement containing the condition is being
@@ -283,20 +189,20 @@ include "official-schema/csl.rnc"{
         |
           ## False if no date value, or date contains a month or season.
           attribute has-year-only {
-              list { cs-dates+ }
+              list { variables.dates+ }
           }
         |
           ## False if no date value, no month or season value, or date contains a day.
           attribute has-month-or-season-only {
-              list { cs-dates+ }
+              list { variables.dates+ }
           }
         |
           ## False if no date value, no month value, or no day value.
           attribute has-day {
-              list { cs-dates+ }
+              list { variables.dates+ }
           }
         |
-          attribute is-plural { cs-names }
+          attribute is-plural { variables.names }
         |
           ## Tests whether the jurisdiction variable matches the given jurisdictions
           attribute jurisdiction {
@@ -305,7 +211,7 @@ include "official-schema/csl.rnc"{
         |
           ## Tests whether the page label matches the given label
           attribute page {
-              list { cs-terms.locator+ }
+              list { terms.locator+ }
           }
         |
           attribute subjurisdictions { xsd:integer }
@@ -344,170 +250,9 @@ include "official-schema/csl.rnc"{
               ## do not perform formatting operations on input
               "normal"
         }?
-}
-
-## Add "suppress-min", "suppress-max" attributes
-name-attributes |=
-    ## Suppress output if number of names is at or above a min,
-    ## or at or below a max value
-    attribute suppress-min { xsd:integer }?,
-    attribute suppress-max { xsd:integer }?
-
-    ## Similar to label as below, but inherits variable from <names> tag
-    name-label-before = element cs:label {
-        attribute form { cs-term-forms }?,
-            affixes-leading-name-label,
-            label-primitives
-        }
-    name-label-after = element cs:label {
-        attribute form { cs-term-forms }?,
-            affixes-trailing-name-label,
-            label-primitives
-        }
-
-## Institution, used to format institutional subunit names
-## Institutional subunit names always follow personal names
-## when this element is included in cs:names
-institution =
-    element cs:institution {
-        institution-attributes,
-        ## formatting and affixes of long and short
-        ## forms may be controlled individually
-        element cs:institution-part {
-            ( ( attribute name { "long" },
-                ## apply formatting to long form only
-                ## if short form is also available
-                attribute if-short { "true" | "false" }? )
-              | attribute name { "short" }
-            ),
-            text-case,
-            strip-periods,
-            font-formatting,
-            affixes
-        }*
-    }
-
-## Attributes for use in formatting institution names
-institution-attributes =
-    delimiter?,
-    attribute form { "long" | "short" }?,
-    attribute part-separator { text }?,
-    ## The order of institution subunits can be reversed
-    attribute reverse-order { "true" | "false" }?,
-    (
-      ## Include the first n institutional subunit names,
-      ## even when a personal name is also present
-      attribute use-first { xsd:integer }
-      |
-      ## Include the first n institutional subunit names
-      ## only if no personal names are present
-        attribute substitute-use-first { xsd:integer }
-    )?,
-    ## Always include the last n institutional subunit names,
-    ## after first dropping subunits with stop-last
-    attribute use-last { xsd:integer }?,
-    ## Always ignore the last n institutional subunit names
-    attribute stop-last { xsd:integer }?,
-    ## Controls which forms of an institutional subunit name
-    ## to include
-    attribute institution-parts { "long" | "short" | "long-short" | "short-long" }?
-    
-## Abbreviation setting of ranges in year dates
-## (by default no reformatting is applied to the input data).
-year-range-format-opt =
-    attribute year-range-format { "expanded" | "minimal" | "minimal-two" | "chicago" }?
-
-## Add support for locale-specific layouts
-citation-layout-locale = element cs:layout { affixes, font-formatting, delimiter, cs-element, layout-locale }
-citation-layout-default = element cs:layout { affixes, font-formatting, delimiter, cs-element }
-
-## Add support for locale-specific layouts, cs:generate
-bibliography-layout-locale = element cs:layout { affixes, font-formatting, layout-locale, cs-generate, cs-element }
-bibliography-layout-default = element cs:layout { affixes, font-formatting, cs-generate?, cs-element }
-
-cs-generate = element cs:generate {
-    attribute type-map {
-        list { (cs-types, cs-types) }
-    },
-    attribute trigger-fields {
-        list { cs-variables+ }
-    }
-}+
-
-layout-locale = attribute locale {
-    list { xsd:language+ }
-}
-
-## Strings for use in affixes
-string-no-leading-space = xsd:string { pattern = "([^ ].*)*" }
-string-no-trailing-space = xsd:string { pattern = "(.*[^ ])*" }
-
-affixes-date =
-    attribute prefix { text }?,
-    attribute suffix { text }?
-affixes-leading-name-label =
-    attribute prefix { string-no-leading-space }?,
-    attribute suffix { text }?
-affixes-trailing-name-label =
-    attribute prefix { text }?,
-    attribute suffix { string-no-trailing-space }?
-
-## Modifications to contents csl-terms.rnc
-div {
-  ## Add miscellaneous terms
-  cs-terms |=
-    "unpublished"
-
-  ## Add support for extended ordinal terms
-  cs-terms.gender-variants |=
-    ## Extended ordinal terms
-    xsd:string { pattern = "ordinal\-\d{2,4}" }
-  
-  ## Add locator terms
-  cs-terms.locator |=
-    "Chapter"
-    | "rule"
-    | "Section"
-    | "title"
-
-  ## Add non-locator terms accompanying number variables
-  cs-terms.non-locator-number-variables |=
-    "supplement"
-    |
-      ## Extended numeric terms
-      xsd:string { pattern = "(chapter\-number|collection\-number|edition|issue|note|number|number\-of\-volumes|page|section|volume|)\-\d{2}" }
-}
-
-## Modifications to contents csl-types.rnc
-div {
-  ## Add item types
-  cs-types |=
-    "classic"
-    | "gazette"
-    | "periodical"
-    | "regulation"
-    | "video"
-}
-
-## Modifications to contents csl-variables.rnc
-div {
-  ## Add name variables
-  cs-names |=
-    "authority"
-    | "director"
-
-  ## Add date variables
-  cs-dates |=
-    "locator-date"
-
-  ## Add number variables
-  cs-numbers |=
-    "page"
-    | "page-first"
-    | "supplement"
-
+        
   ## standard variables
-  cs-strings =
+  variables.strings =
     "abstract"
     | "annote"
     | "archive"
@@ -545,4 +290,168 @@ div {
     | "URL"
     | "version"
     | "year-suffix"
+}
+
+## Add "suppress-min", "suppress-max" attributes
+name.attributes |=
+    ## Suppress output if number of names is at or above a min,
+    ## or at or below a max value
+    attribute suppress-min { xsd:integer }?,
+    attribute suppress-max { xsd:integer }?
+
+## Similar to label as below, but inherits variable from <names> tag
+name-label-before = element cs:label {
+    attribute form { term.form }?,
+        affixes-leading-name-label,
+        label.attributes-shared
+    }
+name-label-after = element cs:label {
+    attribute form { term.form }?,
+        affixes-trailing-name-label,
+        label.attributes-shared
+    }
+
+## Institution, used to format institutional subunit names
+## Institutional subunit names always follow personal names
+## when this element is included in cs:names
+names.institution =
+    element cs:institution {
+        institution-attributes,
+        ## formatting and affixes of long and short
+        ## forms may be controlled individually
+        element cs:institution-part {
+            ( ( attribute name { "long" },
+                ## apply formatting to long form only
+                ## if short form is also available
+                attribute if-short { "true" | "false" }? )
+              | attribute name { "short" }
+            ),
+            text-case,
+            strip-periods,
+            font-formatting,
+            affixes
+        }*
+    }
+
+## Attributes for use in formatting institution names
+institution-attributes =
+    delimiter?,
+    attribute form { "long" | "short" }?,
+    attribute part-separator { text }?,
+    ## The order of institution subunits can be reversed
+    attribute reverse-order { "true" | "false" }?,
+    (
+      ## Include the first n institutional subunit names,
+      ## even when a personal name is also present
+      attribute use-first { xsd:integer }
+      |
+      ## Include the first n institutional subunit names
+      ## only if no personal names are present
+        attribute substitute-use-first { xsd:integer }
+    )?,
+    ## Controls appearance of "and"/"&". Default is "none".
+    attribute and { "text" | "symbol" | "none" }?,
+    ## Always include the last n institutional subunit names,
+    ## after first dropping subunits with stop-last
+    attribute use-last { xsd:integer }?,
+    ## Always ignore the last n institutional subunit names
+    attribute stop-last { xsd:integer }?,
+    ## Controls which forms of an institutional subunit name
+    ## to include
+    attribute institution-parts { "long" | "short" | "long-short" | "short-long" }?
+    
+## Abbreviation setting of ranges in year dates
+## (by default no reformatting is applied to the input data).
+style.year-range-format =
+    attribute year-range-format { "expanded" | "minimal" | "minimal-two" | "chicago" }?
+
+## Add support for locale-specific layouts
+citation.layout-locale = element cs:layout { affixes, delimiter, font-formatting, rendering-element+, layout-locale }
+citation.layout-default = element cs:layout { affixes, delimiter, font-formatting, rendering-element+ }
+
+## Add support for locale-specific layouts, cs:generate
+bibliography.layout-locale = element cs:layout { affixes, font-formatting, layout-locale, cs-generate, rendering-element+ }
+bibliography.layout-default = element cs:layout { affixes, font-formatting, cs-generate?, rendering-element+ }
+
+cs-generate = element cs:generate {
+    attribute type-map {
+        list { (item-types, item-types) }
+    },
+    attribute trigger-fields {
+        list { variables.standard+ }
+    }
+}+
+
+layout-locale = attribute locale {
+    list { xsd:language+ }
+}
+
+## Strings for use in affixes
+string-no-leading-space = xsd:string { pattern = "([^ ].*)*" }
+string-no-trailing-space = xsd:string { pattern = "(.*[^ ])*" }
+
+affixes-date =
+    attribute prefix { text }?,
+    attribute suffix { text }?
+affixes-leading-name-label =
+    attribute prefix { string-no-leading-space }?,
+    attribute suffix { text }?
+affixes-trailing-name-label =
+    attribute prefix { text }?,
+    attribute suffix { string-no-trailing-space }?
+
+## Modifications to contents csl-terms.rnc
+div {
+  ## Add miscellaneous terms
+  terms |=
+    "unpublished"
+
+  ## Add support for extended ordinal terms
+  terms.gender-variants |=
+    ## Extended ordinal terms
+    xsd:string { pattern = "ordinal\-\d{2,4}" }
+  
+  ## Add locator terms
+  terms.locator |=
+    "article"
+    | "Chapter"
+    | "rule"
+    | "Section"
+    | "title"
+
+  ## Add non-locator terms accompanying number variables
+  terms.non-locator-number-variables |=
+    "supplement"
+    |
+      ## Extended numeric terms
+      xsd:string { pattern = "(chapter\-number|collection\-number|edition|issue|note|number|number\-of\-volumes|page|section|volume|)\-\d{2}" }
+}
+
+## Additional item types (csl-types.rnc)
+div {
+  item-types |=
+    "classic"
+    | "gazette"
+    | "periodical"
+    | "regulation"
+    | "video"
+}
+
+## Additional variables (csl-variables.rnc)
+div {
+  ## Add name variables
+  variables.names |=
+    "authority"
+    | "director"
+
+  ## Add date variables
+  variables.dates |=
+    "available-date"
+    | "locator-date"
+
+  ## Add number variables
+  variables.numbers |=
+    "page"
+    | "page-first"
+    | "supplement"
 }
