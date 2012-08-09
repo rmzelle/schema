@@ -20,6 +20,10 @@ include "official-schema/csl.rnc" {
   locale.style-options =
     element cs:style-options {
       
+      ## Limit the "ordinal" form to the first day of the month.
+      [ a:defaultValue = "false" ]
+      attribute limit-day-ordinals-to-day-1 { xsd:boolean }?,
+      
       ## Specify whether punctuation (a period or comma) is placed within
       ## or outside (default) the closing quotation mark.
       [ a:defaultValue = "false" ]
@@ -167,7 +171,7 @@ include "official-schema/csl.rnc" {
     | 
       ## Tests whether the locator matches the given locator types.
       attribute locator {
-        list { (terms.locator | "sub-verbo")+ }
+        list { (terms.locator.testable | "sub-verbo")+ }
       }
     | 
       ## Tests whether the cite position matches the given positions.
