@@ -449,12 +449,6 @@ div {
   ## Add miscellaneous terms
   terms |= "unpublished"
   
-  ## Add support for extended ordinal terms
-  terms.gender-variants |=
-    
-    ## Extended ordinal terms
-    xsd:string { pattern = "ordinal\-\d{2,4}" }
-  
   ## Add locator terms
   terms.locator |= "article" | "Chapter" | "rule" | "Section" | "title"
   
@@ -479,7 +473,7 @@ div {
 div {
   
   ## Add name variables
-  variables.names |= "authority" | "director"
+  variables.names |= "authority"
   
   ## Add date variables
   variables.dates |= "available-date" | "locator-date"
